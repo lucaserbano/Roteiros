@@ -66,7 +66,7 @@
     .count { color:var(--muted); font-size:13px; }
 
     .table-wrap { overflow:auto; max-height:calc(100vh - 215px); }
-    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1380px; }
+    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1480px; }
 
     thead th {
       position:sticky;
@@ -93,8 +93,9 @@
     .col-num { width:11%; min-width:145px; }
     .col-mod { width:18%; min-width:210px; }
     .col-aula-num { width:11%; min-width:145px; }
-    .col-aula { width:34%; min-width:460px; }
-    .col-ref { width:26%; min-width:340px; }
+    .col-aula { width:30%; min-width:420px; }
+    .col-review { width:8%; min-width:140px; }
+    .col-ref { width:22%; min-width:320px; }
 
     .pill {
       display:inline-block;
@@ -177,6 +178,41 @@
       white-space:nowrap;
     }
 
+    .review-wrap {
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:flex-start;
+    }
+    .review-toggle {
+      display:flex;
+      align-items:center;
+      gap:7px;
+      font-size:12px;
+      color:#284057;
+      cursor:pointer;
+      user-select:none;
+    }
+    .review-checkbox {
+      width:16px;
+      height:16px;
+      cursor:pointer;
+    }
+    .review-status {
+      font-size:11px;
+      color:var(--muted);
+      font-weight:600;
+    }
+    .review-status.done {
+      color:#1e7c38;
+    }
+    tbody tr.is-reviewed td {
+      background:#f5fcf7;
+    }
+    tbody tr.is-reviewed:hover td {
+      background:#eaf8ef;
+    }
+
     .footer {
       padding:9px 14px;
       font-size:12px;
@@ -189,7 +225,7 @@
       .head h1 { font-size:18px; }
       .search { min-width:unset; width:100%; }
       .table-wrap { max-height:calc(100vh - 255px); }
-      table { min-width:1000px; }
+	      table { min-width:1120px; }
     }
   </style>
 </head>
@@ -217,6 +253,7 @@
               <th>Nome do módulo</th>
               <th>Número da aula</th>
               <th>Nome da aula</th>
+              <th>Revisada</th>
               <th>Referências</th>
             </tr>
           </thead>
@@ -303,7 +340,9 @@
 ];
 
 const storageKey = 'talitah_referencias_v6_livros_uptodate_diretrizes';
+const reviewedStorageKey = 'talitah_aulas_revisadas_v1';
     const savedRefs = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    const savedReviewed = JSON.parse(localStorage.getItem(reviewedStorageKey) || '{}');
 
     const tableBody = document.getElementById('tableBody');
     const input = document.getElementById('search');
@@ -324,6 +363,15 @@ const storageKey = 'talitah_referencias_v6_livros_uptodate_diretrizes';
     function saveRef(index, value) {
       savedRefs[index] = value;
       localStorage.setItem(storageKey, JSON.stringify(savedRefs));
+    }
+
+    function saveReviewed(index, value) {
+      if (value) {
+        savedReviewed[index] = true;
+      } else {
+        delete savedReviewed[index];
+      }
+      localStorage.setItem(reviewedStorageKey, JSON.stringify(savedReviewed));
     }
 
     function autoResize(textarea) {
@@ -393,18 +441,50 @@ const storageKey = 'talitah_referencias_v6_livros_uptodate_diretrizes';
       const tdMod = document.createElement('td');
       const tdAulaNum = document.createElement('td');
       const tdAula = document.createElement('td');
+      const tdReview = document.createElement('td');
       const tdRef = document.createElement('td');
 
       tdNum.className = 'col-num';
       tdMod.className = 'col-mod';
       tdAulaNum.className = 'col-aula-num';
       tdAula.className = 'col-aula';
+      tdReview.className = 'col-review';
       tdRef.className = 'col-ref';
 
       tdNum.innerHTML = `<span class='pill'>Módulo ${item.modNum}</span>`;
       tdMod.textContent = item.modNome;
       tdAulaNum.innerHTML = `<span class='pill'>Aula ${item.aulaNum}</span>`;
       tdAula.textContent = item.aula;
+
+      const reviewWrap = document.createElement('div');
+      reviewWrap.className = 'review-wrap';
+      const reviewToggle = document.createElement('label');
+      reviewToggle.className = 'review-toggle';
+      const reviewCheckbox = document.createElement('input');
+      reviewCheckbox.type = 'checkbox';
+      reviewCheckbox.className = 'review-checkbox';
+      reviewCheckbox.checked = Boolean(savedReviewed[index]);
+      reviewCheckbox.setAttribute('aria-label', `Marcar aula ${item.aulaNum} como revisada`);
+      const reviewToggleText = document.createElement('span');
+      reviewToggleText.textContent = 'Revisada';
+      reviewToggle.appendChild(reviewCheckbox);
+      reviewToggle.appendChild(reviewToggleText);
+      const reviewStatus = document.createElement('span');
+      reviewStatus.className = 'review-status';
+      reviewWrap.appendChild(reviewToggle);
+      reviewWrap.appendChild(reviewStatus);
+      tdReview.appendChild(reviewWrap);
+
+      const updateReviewState = (checked) => {
+        reviewStatus.textContent = checked ? 'Marcada como revisada' : 'Ainda não revisada';
+        reviewStatus.classList.toggle('done', checked);
+        tr.classList.toggle('is-reviewed', checked);
+      };
+      reviewCheckbox.addEventListener('change', (event) => {
+        const checked = event.target.checked;
+        saveReviewed(index, checked);
+        updateReviewState(checked);
+      });
 
       const textarea = document.createElement('textarea');
       textarea.className = 'ref-input';
@@ -443,11 +523,13 @@ const storageKey = 'talitah_referencias_v6_livros_uptodate_diretrizes';
       tr.appendChild(tdMod);
       tr.appendChild(tdAulaNum);
       tr.appendChild(tdAula);
+      tr.appendChild(tdReview);
       tr.appendChild(tdRef);
       tableBody.appendChild(tr);
       autoResize(textarea);
       const total = renderLinkPreview(textarea.value, linkPreview);
       linkCount.textContent = `${total || 0} link(s) detectado(s)`;
+      updateReviewState(reviewCheckbox.checked);
     });
 
     const rows = Array.from(document.querySelectorAll('#refTable tbody tr'));
