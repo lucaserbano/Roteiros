@@ -66,7 +66,7 @@
     .count { color:var(--muted); font-size:13px; }
 
     .table-wrap { overflow:auto; max-height:calc(100vh - 215px); }
-    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1480px; }
+    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1560px; }
 
     thead th {
       position:sticky;
@@ -94,7 +94,7 @@
     .col-mod { width:18%; min-width:210px; }
     .col-aula-num { width:11%; min-width:145px; }
     .col-aula { width:30%; min-width:420px; }
-    .col-review { width:8%; min-width:140px; }
+    .col-review { width:14%; min-width:210px; }
     .col-ref { width:22%; min-width:320px; }
 
     .pill {
@@ -181,8 +181,13 @@
     .review-wrap {
       display:flex;
       flex-direction:column;
-      gap:6px;
+      gap:8px;
       align-items:flex-start;
+    }
+    .review-grid {
+      display:flex;
+      flex-direction:column;
+      gap:5px;
     }
     .review-toggle {
       display:flex;
@@ -206,10 +211,19 @@
     .review-status.done {
       color:#1e7c38;
     }
-    tbody tr.is-reviewed td {
+    .review-status.partial {
+      color:#245b8b;
+    }
+    tbody tr.is-reviewed-partial td {
+      background:#f2f8ff;
+    }
+    tbody tr.is-reviewed-partial:hover td {
+      background:#e8f2ff;
+    }
+    tbody tr.is-reviewed-all td {
       background:#f5fcf7;
     }
-    tbody tr.is-reviewed:hover td {
+    tbody tr.is-reviewed-all:hover td {
       background:#eaf8ef;
     }
 
@@ -225,7 +239,7 @@
       .head h1 { font-size:18px; }
       .search { min-width:unset; width:100%; }
       .table-wrap { max-height:calc(100vh - 255px); }
-	      table { min-width:1120px; }
+	      table { min-width:1220px; }
     }
   </style>
 </head>
@@ -253,7 +267,7 @@
               <th>Nome do módulo</th>
               <th>Número da aula</th>
               <th>Nome da aula</th>
-              <th>Revisada</th>
+              <th>Revisão</th>
               <th>Referências</th>
             </tr>
           </thead>
@@ -340,9 +354,20 @@
 ];
 
 const storageKey = 'talitah_referencias_v6_livros_uptodate_diretrizes';
-const reviewedStorageKey = 'talitah_aulas_revisadas_v1';
+const legacyReviewedStorageKey = 'talitah_aulas_revisadas_v1';
+const reviewedStorageKey = 'talitah_aulas_revisadas_v2';
     const savedRefs = JSON.parse(localStorage.getItem(storageKey) || '{}');
     const savedReviewed = JSON.parse(localStorage.getItem(reviewedStorageKey) || '{}');
+    const legacyReviewed = JSON.parse(localStorage.getItem(legacyReviewedStorageKey) || '{}');
+
+    if (!Object.keys(savedReviewed).length && Object.keys(legacyReviewed).length) {
+      Object.keys(legacyReviewed).forEach((index) => {
+        if (legacyReviewed[index]) {
+          savedReviewed[index] = { eduardo: false, lucas: true };
+        }
+      });
+      localStorage.setItem(reviewedStorageKey, JSON.stringify(savedReviewed));
+    }
 
     const tableBody = document.getElementById('tableBody');
     const input = document.getElementById('search');
@@ -365,9 +390,25 @@ const reviewedStorageKey = 'talitah_aulas_revisadas_v1';
       localStorage.setItem(storageKey, JSON.stringify(savedRefs));
     }
 
-    function saveReviewed(index, value) {
-      if (value) {
-        savedReviewed[index] = true;
+    function getReviewedState(index) {
+      const state = savedReviewed[index];
+      if (state && typeof state === 'object') {
+        return {
+          eduardo: Boolean(state.eduardo),
+          lucas: Boolean(state.lucas)
+        };
+      }
+      if (state === true) {
+        return { eduardo: false, lucas: true };
+      }
+      return { eduardo: false, lucas: false };
+    }
+
+    function saveReviewed(index, reviewer, value) {
+      const current = getReviewedState(index);
+      current[reviewer] = value;
+      if (current.eduardo || current.lucas) {
+        savedReviewed[index] = current;
       } else {
         delete savedReviewed[index];
       }
@@ -458,32 +499,65 @@ const reviewedStorageKey = 'talitah_aulas_revisadas_v1';
 
       const reviewWrap = document.createElement('div');
       reviewWrap.className = 'review-wrap';
-      const reviewToggle = document.createElement('label');
-      reviewToggle.className = 'review-toggle';
-      const reviewCheckbox = document.createElement('input');
-      reviewCheckbox.type = 'checkbox';
-      reviewCheckbox.className = 'review-checkbox';
-      reviewCheckbox.checked = Boolean(savedReviewed[index]);
-      reviewCheckbox.setAttribute('aria-label', `Marcar aula ${item.aulaNum} como revisada`);
-      const reviewToggleText = document.createElement('span');
-      reviewToggleText.textContent = 'Revisada';
-      reviewToggle.appendChild(reviewCheckbox);
-      reviewToggle.appendChild(reviewToggleText);
+      const reviewGrid = document.createElement('div');
+      reviewGrid.className = 'review-grid';
+      const reviewState = getReviewedState(index);
+      const eduardoToggle = document.createElement('label');
+      eduardoToggle.className = 'review-toggle';
+      const eduardoCheckbox = document.createElement('input');
+      eduardoCheckbox.type = 'checkbox';
+      eduardoCheckbox.className = 'review-checkbox';
+      eduardoCheckbox.checked = reviewState.eduardo;
+      eduardoCheckbox.setAttribute('aria-label', `Marcar aula ${item.aulaNum} como revisada por Eduardo`);
+      const eduardoToggleText = document.createElement('span');
+      eduardoToggleText.textContent = 'Eduardo';
+      eduardoToggle.appendChild(eduardoCheckbox);
+      eduardoToggle.appendChild(eduardoToggleText);
+      const lucasToggle = document.createElement('label');
+      lucasToggle.className = 'review-toggle';
+      const lucasCheckbox = document.createElement('input');
+      lucasCheckbox.type = 'checkbox';
+      lucasCheckbox.className = 'review-checkbox';
+      lucasCheckbox.checked = reviewState.lucas;
+      lucasCheckbox.setAttribute('aria-label', `Marcar aula ${item.aulaNum} como revisada por Lucas`);
+      const lucasToggleText = document.createElement('span');
+      lucasToggleText.textContent = 'Lucas';
+      lucasToggle.appendChild(lucasCheckbox);
+      lucasToggle.appendChild(lucasToggleText);
+      reviewGrid.appendChild(eduardoToggle);
+      reviewGrid.appendChild(lucasToggle);
       const reviewStatus = document.createElement('span');
       reviewStatus.className = 'review-status';
-      reviewWrap.appendChild(reviewToggle);
+      reviewWrap.appendChild(reviewGrid);
       reviewWrap.appendChild(reviewStatus);
       tdReview.appendChild(reviewWrap);
 
-      const updateReviewState = (checked) => {
-        reviewStatus.textContent = checked ? 'Marcada como revisada' : 'Ainda não revisada';
-        reviewStatus.classList.toggle('done', checked);
-        tr.classList.toggle('is-reviewed', checked);
+      const updateReviewState = (eduardoChecked, lucasChecked) => {
+        const reviewedByAnyone = eduardoChecked || lucasChecked;
+        const reviewedByBoth = eduardoChecked && lucasChecked;
+        if (reviewedByBoth) {
+          reviewStatus.textContent = 'Revisada por Eduardo e Lucas';
+        } else if (eduardoChecked) {
+          reviewStatus.textContent = 'Revisada por Eduardo';
+        } else if (lucasChecked) {
+          reviewStatus.textContent = 'Revisada por Lucas';
+        } else {
+          reviewStatus.textContent = 'Ainda não revisada';
+        }
+        reviewStatus.classList.toggle('done', reviewedByBoth);
+        reviewStatus.classList.toggle('partial', reviewedByAnyone && !reviewedByBoth);
+        tr.classList.toggle('is-reviewed-partial', reviewedByAnyone && !reviewedByBoth);
+        tr.classList.toggle('is-reviewed-all', reviewedByBoth);
       };
-      reviewCheckbox.addEventListener('change', (event) => {
+      eduardoCheckbox.addEventListener('change', (event) => {
         const checked = event.target.checked;
-        saveReviewed(index, checked);
-        updateReviewState(checked);
+        saveReviewed(index, 'eduardo', checked);
+        updateReviewState(checked, lucasCheckbox.checked);
+      });
+      lucasCheckbox.addEventListener('change', (event) => {
+        const checked = event.target.checked;
+        saveReviewed(index, 'lucas', checked);
+        updateReviewState(eduardoCheckbox.checked, checked);
       });
 
       const textarea = document.createElement('textarea');
@@ -529,7 +603,7 @@ const reviewedStorageKey = 'talitah_aulas_revisadas_v1';
       autoResize(textarea);
       const total = renderLinkPreview(textarea.value, linkPreview);
       linkCount.textContent = `${total || 0} link(s) detectado(s)`;
-      updateReviewState(reviewCheckbox.checked);
+      updateReviewState(eduardoCheckbox.checked, lucasCheckbox.checked);
     });
 
     const rows = Array.from(document.querySelectorAll('#refTable tbody tr'));
