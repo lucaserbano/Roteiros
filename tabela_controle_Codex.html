@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='utf-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <title>Tabela Controle Codex - Talitah</title>
+  <style>
+    :root {
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --line:#e5eaf2;
+      --head:#eef4fb;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --link:#0b63ce;
+      --field:#f8fbff;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family:"Avenir Next","Segoe UI","Helvetica Neue",Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#f7faff 0%,var(--bg) 100%);
+    }
+    .wrap { max-width:1460px; margin:24px auto; padding:0 14px; }
+    .card {
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:14px;
+      box-shadow:0 8px 22px rgba(15,23,42,.06);
+      overflow:hidden;
+    }
+    .head { padding:16px 18px 10px; border-bottom:1px solid var(--line); }
+    .head h1 { margin:0; font-size:22px; color:#123a5b; }
+    .head p { margin:6px 0 0; color:var(--muted); font-size:14px; }
+
+    .toolbar {
+      padding:10px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      background:#fff;
+    }
+    .search {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:8px 10px;
+      min-width:320px;
+      flex:1;
+      max-width:760px;
+    }
+    .search span { color:var(--muted); font-size:13px; }
+    .search input {
+      border:0;
+      outline:none;
+      width:100%;
+      font-size:14px;
+      background:transparent;
+    }
+    .count { color:var(--muted); font-size:13px; }
+
+    .table-wrap { overflow:auto; max-height:calc(100vh - 215px); }
+    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1380px; }
+
+    thead th {
+      position:sticky;
+      top:0;
+      z-index:2;
+      background:var(--head);
+      border-bottom:1px solid var(--line);
+      color:#0f2d47;
+      text-align:left;
+      font-weight:700;
+      font-size:13px;
+      padding:10px 12px;
+    }
+    tbody td {
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+      padding:12px;
+      font-size:14px;
+      line-height:1.35;
+    }
+    tbody tr:nth-child(even) td { background:#fcfdff; }
+    tbody tr:hover td { background:#f7fbff; }
+
+    .col-num { width:11%; min-width:145px; }
+    .col-mod { width:18%; min-width:210px; }
+    .col-aula-num { width:11%; min-width:145px; }
+    .col-aula { width:34%; min-width:460px; }
+    .col-ref { width:26%; min-width:340px; }
+
+    .pill {
+      display:inline-block;
+      font-size:12px;
+      color:#1d4f7a;
+      font-weight:700;
+      background:#e8f2fc;
+      border:1px solid #d3e6fa;
+      border-radius:999px;
+      padding:3px 10px;
+    }
+
+    textarea.ref-input {
+      width:100%;
+      min-height:84px;
+      resize:none;
+      overflow:hidden;
+      border:1px solid #d6e1ef;
+      border-radius:10px;
+      background:var(--field);
+      padding:10px;
+      color:#0f2437;
+      font-size:13px;
+      line-height:1.4;
+      font-family:ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    textarea.ref-input:focus {
+      outline:none;
+      border-color:#93b9e7;
+      box-shadow:0 0 0 3px rgba(44,122,219,.15);
+      background:#ffffff;
+    }
+
+    .link-preview {
+      margin-top:8px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .link-preview a {
+      font-size:12px;
+      line-height:1.35;
+      color:var(--link);
+      text-decoration:none;
+      border-bottom:1px dashed rgba(11,99,206,.35);
+      width:fit-content;
+    }
+    .link-preview a:hover {
+      text-decoration:underline;
+      border-bottom-color:transparent;
+    }
+    .link-preview .empty {
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .action-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:8px;
+    }
+    .open-links-btn {
+      border:1px solid #c5d9ef;
+      background:#eaf3fd;
+      color:#0f4573;
+      font-size:12px;
+      font-weight:600;
+      padding:6px 10px;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    .open-links-btn:hover {
+      background:#deecfb;
+    }
+    .link-count {
+      font-size:11px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .footer {
+      padding:9px 14px;
+      font-size:12px;
+      color:var(--muted);
+      border-top:1px solid var(--line);
+      background:#fbfdff;
+    }
+
+    @media (max-width:900px) {
+      .head h1 { font-size:18px; }
+      .search { min-width:unset; width:100%; }
+      .table-wrap { max-height:calc(100vh - 255px); }
+      table { min-width:1000px; }
+    }
+  </style>
+</head>
+<body>
+  <main class='wrap'>
+    <section class='card'>
+      <header class='head'>
+        <h1>Tabela de Controle - Aulas da Professora Talitah</h1>
+        <p>10 aulas (sem casos e sem Infectologia), com referências de livros, UpToDate e diretrizes/consensos nacionais e internacionais.</p>
+      </header>
+
+      <div class='toolbar'>
+        <label class='search' for='search'>
+          <span>Buscar</span>
+          <input id='search' type='search' placeholder='Digite número do módulo, número da aula, módulo, aula ou trecho do link...' />
+        </label>
+        <div class='count' id='count'></div>
+      </div>
+
+      <div class='table-wrap'>
+        <table id='refTable'>
+          <thead>
+            <tr>
+              <th>Número do módulo</th>
+              <th>Nome do módulo</th>
+              <th>Número da aula</th>
+              <th>Nome da aula</th>
+              <th>Referências</th>
+            </tr>
+          </thead>
+          <tbody id='tableBody'></tbody>
+        </table>
+      </div>
+
+      <div class='footer'>Campo editável com todas as referências. Use o botão para abrir todos os links da aula.</div>
+    </section>
+  </main>
+
+  <script>
+    const aulas = [
+  {
+    "modNum": 6,
+    "modNome": "Gastro e Hemato",
+    "aulaNum": 6,
+    "aula": "Parasitose intestinal: ainda é comum nos dias de hoje? Prevalências atuais",
+    "refs": "Nelson - capítulo 328 (Giardiasis and Balantidiasis)\nNelson - capítulo 325 (Principles of Antiparasitic Therapy)\nTratado volume 1, Seção 20, capítulo Parasitoses Intestinais\nTratado volume 2 - não encontrei capítulo específico no sumário para este tema\nGiardiasis: Epidemiology, clinical manifestations, and diagnosis - https://www.uptodate.com/contents/giardiasis-epidemiology-clinical-manifestations-and-diagnosis\nGiardiasis: Treatment and prevention - https://www.uptodate.com/contents/giardiasis-treatment-and-prevention\nCryptosporidiosis - https://www.uptodate.com/contents/cryptosporidiosis\nSociedade Brasileira de Pediatria - Parasitoses intestinais (Documento Científico, 2020) - https://www.sbp.com.br/fileadmin/user_upload/22733c-DC-Parasitoses_Intestinais.pdf\nWHO - Guideline on preventive chemotherapy for public health control of strongyloidiasis (2024) - https://www.who.int/publications/i/item/9789240094024\nWHO - Guideline on control and elimination of human schistosomiasis (2022) - https://www.who.int/publications/i/item/9789240041608"
+  },
+  {
+    "modNum": 7,
+    "modNome": "Nefro e Cardio",
+    "aulaNum": 1,
+    "aula": "Coleta de urina em lactente sem controle esfincteriano: usar sonda e saco coletor?",
+    "refs": "Nelson - capítulo 575 (Urinary Tract Infections)\nTratado volume 1 - não encontrei capítulo específico no sumário para este tema\nTratado volume 2, Seção 22, capítulo Infecção do trato urinário\nTratado volume 2, Seção 22, capítulo Interpretação do EAS, proteinúria e hematúria\nUrine collection techniques in infants and children with suspected urinary tract infection - https://www.uptodate.com/contents/urine-collection-techniques-in-infants-and-children-with-suspected-urinary-tract-infection\nUrinary tract infections in infants and children older than one month: Clinical features and diagnosis - https://www.uptodate.com/contents/urinary-tract-infections-in-infants-and-children-older-than-one-month-clinical-features-and-diagnosis\nUrinary tract infections in infants older than one month and young children: Acute management, imaging, and prognosis - https://www.uptodate.com/contents/urinary-tract-infections-in-infants-older-than-one-month-and-young-children-acute-management-imaging-and-prognosis\nNICE - Urinary tract infection in under 16s: diagnosis and management (NG224, 2022; atualização de vigilância em 2025) - https://www.nice.org.uk/guidance/ng224\nEAU/ESPU - Paediatric Urology Guidelines (atualização 2025, seção de UTI) - https://uroweb.org/guidelines/paediatric-urology/summary-of-changes/2025\nSociedade Brasileira de Pediatria - Infecção do Trato Urinário em Pediatria: Atualização 2021 - https://www.sbp.com.br/sbp-atualiza-orientacoes-sobre-infeccao-do-trato-urinario/"
+  },
+  {
+    "modNum": 7,
+    "modNome": "Nefro e Cardio",
+    "aulaNum": 2,
+    "aula": "Antibióticos para tratamento de infecção urinária: quais escolher?",
+    "refs": "Nelson - capítulo 575 (Urinary Tract Infections)\nTratado volume 1 - não encontrei capítulo específico no sumário para este tema\nTratado volume 2, Seção 22, capítulo Infecção do trato urinário\nUrinary tract infections in infants and children older than one month: Clinical features and diagnosis - https://www.uptodate.com/contents/urinary-tract-infections-in-infants-and-children-older-than-one-month-clinical-features-and-diagnosis\nUrinary tract infections in infants older than one month and young children: Acute management, imaging, and prognosis - https://www.uptodate.com/contents/urinary-tract-infections-in-infants-older-than-one-month-and-young-children-acute-management-imaging-and-prognosis\nUrinary tract infections in children: Long-term management and prevention - https://www.uptodate.com/contents/urinary-tract-infections-in-children-long-term-management-and-prevention\nNICE - Pyelonephritis (acute): antimicrobial prescribing (NG111) - https://www.nice.org.uk/guidance/ng111\nNICE - Urinary tract infection (lower): antimicrobial prescribing (NG109) - https://www.nice.org.uk/guidance/ng109\nSociedade Brasileira de Pediatria - Infecção do Trato Urinário em Pediatria: Atualização 2021 - https://www.sbp.com.br/sbp-atualiza-orientacoes-sobre-infeccao-do-trato-urinario/"
+  },
+  {
+    "modNum": 7,
+    "modNome": "Nefro e Cardio",
+    "aulaNum": 3,
+    "aula": "Sangue na urina: quais diagnósticos possíveis?",
+    "refs": "Nelson - capítulo 558 (Clinical Evaluation of the Child with Hematuria)\nNelson - capítulo 564 (Lower Urinary Tract Causes of Hematuria)\nTratado volume 1 - não encontrei capítulo específico no sumário para este tema\nTratado volume 2, Seção 22, capítulo Interpretação do EAS, proteinúria e hematúria\nGross hematuria in children: Evaluation - https://www.uptodate.com/contents/gross-hematuria-in-children-evaluation\nUrinary tract infections in infants and children older than one month: Clinical features and diagnosis - https://www.uptodate.com/contents/urinary-tract-infections-in-infants-and-children-older-than-one-month-clinical-features-and-diagnosis\nManagement of vesicoureteral reflux - https://www.uptodate.com/contents/management-of-vesicoureteral-reflux\nRCH Melbourne - Clinical Practice Guideline: Haematuria - https://www.rch.org.au/clinicalguide/guideline_index/Haematuria/\nNHSGGC - Haematuria in Children: Advice for Referrers - https://www.clinicalguidelines.scot.nhs.uk/rhc-for-health-professionals/guidelines/primary-care-referral-guidelines/medical-paediatric-pre-referral-guidance/haematuria-in-children-advice-for-referrers/\nNICE - Urinary tract infection in under 16s: diagnosis and management (NG224) - https://www.nice.org.uk/guidance/ng224"
+  },
+  {
+    "modNum": 7,
+    "modNome": "Nefro e Cardio",
+    "aulaNum": 4,
+    "aula": "Quando fazer propedeutica após uma infecção urinária na infancia? e quais exames solicitar?",
+    "refs": "Nelson - capítulo 575 (Urinary Tract Infections)\nNelson - capítulo 576 (Vesicoureteral Reflux)\nTratado volume 1 - não encontrei capítulo específico no sumário para este tema\nTratado volume 2, Seção 22, capítulo Infecção do trato urinário\nTratado volume 2, Seção 22, capítulo Afecções urológicas\nUrinary tract infections in infants older than one month and young children: Acute management, imaging, and prognosis - https://www.uptodate.com/contents/urinary-tract-infections-in-infants-older-than-one-month-and-young-children-acute-management-imaging-and-prognosis\nUrinary tract infections in children: Long-term management and prevention - https://www.uptodate.com/contents/urinary-tract-infections-in-children-long-term-management-and-prevention\nManagement of vesicoureteral reflux - https://www.uptodate.com/contents/management-of-vesicoureteral-reflux\nNICE - Urinary tract infection in under 16s: diagnosis and management (NG224) - https://www.nice.org.uk/guidance/ng224\nEAU/ESPU - Update and summary of the paediatric guidelines on urinary tract infection in children (2025 update) - https://researchportal.helsinki.fi/en/publications/update-and-summary-of-the-eauespu-paediatric-guidelines-on-urinar\nEAU/ESPU - Update and Summary of Paediatric Guidelines on Vesicoureteral Reflux in Children (2024) - https://pubmed.ncbi.nlm.nih.gov/38182493/"
+  },
+  {
+    "modNum": 7,
+    "modNome": "Nefro e Cardio",
+    "aulaNum": 5,
+    "aula": "Dor torácica no pronto atendimento: o que pensar?",
+    "refs": "Nelson - capítulo 471 (History and Physical Examination in Cardiac Evaluation)\nNelson - capítulo 472 (Laboratory Cardiac Evaluation)\nTratado volume 1, Seção 14, capítulo Avaliação clínica do sistema cardiovascular na criança\nTratado volume 1, Seção 3, capítulo Síncope no paciente pediátrico\nTratado volume 2 - não encontrei capítulo específico com foco em dor torácica no pronto atendimento\nNontraumatic chest pain in children and adolescents: Approach and initial management - https://www.uptodate.com/contents/nontraumatic-chest-pain-in-children-and-adolescents-approach-and-initial-management\nCauses of nontraumatic chest pain in children and adolescents - https://www.uptodate.com/contents/causes-of-nontraumatic-chest-pain-in-children-and-adolescents\nEmergency evaluation of syncope in children and adolescents - https://www.uptodate.com/contents/emergency-evaluation-of-syncope-in-children-and-adolescents\nSociedade Brasileira de Pediatria - Dor Torácica na Criança (Documento Científico) - https://www.sbp.com.br/imprensa/detalhe/nid/novo-documento-cientifico-da-sbp-aborda-a-dor-toracica-na-crianca/\nRCH Melbourne - Clinical Practice Guideline: Chest pain - https://www.rch.org.au/clinicalguide/guideline_index/Chest_pain/\nAHA/ACC - 2021 Guideline for the Evaluation and Diagnosis of Chest Pain - https://professional.heart.org/en/science-news/2021-guideline-for-the-evaluation-and-diagnosis-of-chest-pain"
+  },
+  {
+    "modNum": 8,
+    "modNome": "Endocrino e gineco",
+    "aulaNum": 2,
+    "aula": "Aparecimento de broto mamário e pêlos: quando devemos nos preocupar?",
+    "refs": "Nelson - capítulo 599 (Physiology of Puberty)\nNelson - capítulo 600 (Disorders of Pubertal Development)\nTratado volume 1, Seção 16, capítulo Distúrbios puberais\nTratado volume 2, Seção 36, capítulo O exame da mama na infância e na adolescência\nDefinition, etiology, and evaluation of precocious puberty - https://www.uptodate.com/contents/definition-etiology-and-evaluation-of-precocious-puberty\nNormal puberty - https://www.uptodate.com/contents/normal-puberty\nPremature adrenarche - https://www.uptodate.com/contents/premature-adrenarche\nMinistério da Saúde (Brasil) - PCDT Puberdade Precoce Central (portaria atualizada em 03/08/2022; página atualizada em 2025) - https://www.gov.br/saude/pt-br/assuntos/pcdt/p/puberdade-precoce-central/view\nKorean Society of Pediatric Endocrinology - 2022 Clinical practice guidelines for central precocious puberty (publicado em 2023) - https://pmc.ncbi.nlm.nih.gov/articles/PMC10556443/\nSociedade Brasileira de Pediatria - Puberdade precoce (atualizado em março/2023) - https://www.sbp.com.br/especiais/pediatria-para-familias/desenvolvimento/puberdade-precoce/"
+  },
+  {
+    "modNum": 9,
+    "modNome": "Cirurgia ortopedia e reumato",
+    "aulaNum": 1,
+    "aula": "Conceito de febre de origem indeterminada: diagnósticos diferenciais. Diferenciar também da pseudo febre de origem indeterminada que é a sobreposição de quadros benignos autolimitados.",
+    "refs": "Nelson - capítulo 222 (Fever of Unknown Origin)\nTratado volume 1, Seção 20, capítulo Febre sem sinais localizatórios\nTratado volume 2 - não encontrei capítulo específico no sumário para febre de origem indeterminada\nFever of unknown origin in children: Evaluation - https://www.uptodate.com/contents/fever-of-unknown-origin-in-children-evaluation\nFever of unknown origin in children: Etiology - https://www.uptodate.com/contents/fever-of-unknown-origin-in-children-etiology\nFever without a source in children 3 to 36 months of age: Evaluation and management - https://www.uptodate.com/contents/fever-without-a-source-in-children-3-to-36-months-of-age-evaluation-and-management\nNICE - Fever in under 5s: assessment and initial management (NG143; última atualização em 2021, vigilância 2025) - https://www.nice.org.uk/guidance/ng143\nNICE - Sepsis: recognition, diagnosis and early management (NG51) - https://www.nice.org.uk/guidance/ng51\nAmerican Academy of Pediatrics - Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old (CPG, 2021) - https://publications.aap.org/pediatrics/article/148/2/e2021052228/179783/Evaluation-and-Management-of-Well-Appearing"
+  },
+  {
+    "modNum": 9,
+    "modNome": "Cirurgia ortopedia e reumato",
+    "aulaNum": 2,
+    "aula": "Diagnóstico diferencial das Linfadenopatias: red flags para malignidade e diferenciação de outras estruturas cervicais.",
+    "refs": "Nelson - capítulo 539 (Lymphadenopathy)\nTratado volume 1 - não encontrei capítulo específico de linfonodomegalias no sumário\nTratado volume 2, Seção 27, capítulo Linfonodomegalias\nPeripheral lymphadenopathy in children: Evaluation and diagnostic approach - https://www.uptodate.com/contents/peripheral-lymphadenopathy-in-children-evaluation-and-diagnostic-approach\nCervical lymphadenitis in children: Etiology and clinical manifestations - https://www.uptodate.com/contents/cervical-lymphadenitis-in-children-etiology-and-clinical-manifestations\nCervical lymphadenitis in children: Diagnostic approach and initial management - https://www.uptodate.com/contents/cervical-lymphadenitis-in-children-diagnostic-approach-and-initial-management\nSociedade Brasileira de Pediatria - Linfonodomegalia periférica na criança e no adolescente: quando pensar em câncer - https://www.sbp.com.br/imprensa/detalhe/nid/documento-cientifico-da-sbp-aborda-a-linfonodomegalia-periferica-em-criancas-e-adolescentes/\nRCH Melbourne - Clinical Practice Guideline: Cervical lymphadenopathy - https://www.rch.org.au/clinicalguide/guideline_index/Cervical_Lymphadenopathy/\nNICE - Suspected cancer: recognition and referral (NG12) - https://www.nice.org.uk/guidance/ng12"
+  },
+  {
+    "modNum": 11,
+    "modNome": "Adolescencia psiq oftalmo",
+    "aulaNum": 5,
+    "aula": "Conjuntivite neonatal: quando tratar e como tratar?",
+    "refs": "Nelson - capítulo 272.3 (Conjunctivitis and Pneumonia in Newborns)\nTratado volume 1 - não encontrei capítulo específico de conjuntivite neonatal no sumário\nTratado volume 2, Seção 33, capítulo Doenças corneoconjuntivais na infância\nTratado volume 2, Seção 33, capítulo A avaliação do sistema visual pelo pediatra\nGonococcal infection in the newborn - https://www.uptodate.com/contents/gonococcal-infection-in-the-newborn\nChlamydia trachomatis infections in the newborn - https://www.uptodate.com/contents/chlamydia-trachomatis-infections-in-the-newborn\nConjunctivitis - https://www.uptodate.com/contents/conjunctivitis\nCDC - Gonococcal Infections Among Neonates (STI Treatment Guidelines) - https://www.cdc.gov/std/treatment-guidelines/gonorrhea-neonates.htm\nCDC - Chlamydial Infections (seção neonatal) - https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm\nUSPSTF - Ocular Prophylaxis for Gonococcal Ophthalmia Neonatorum: Preventive Medication (2019) - https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/ocular-prophylaxis-for-gonococcal-ophthalmia-neonatorum-preventive-medication"
+  }
+];
+
+const storageKey = 'talitah_referencias_v6_livros_uptodate_diretrizes';
+    const savedRefs = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+    const tableBody = document.getElementById('tableBody');
+    const input = document.getElementById('search');
+    const count = document.getElementById('count');
+
+    function normalize(v) {
+      return (v || '')
+        .toString()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+    }
+
+    function paintCount(n) {
+      count.textContent = `${n} resultado${n === 1 ? '' : 's'}`;
+    }
+
+    function saveRef(index, value) {
+      savedRefs[index] = value;
+      localStorage.setItem(storageKey, JSON.stringify(savedRefs));
+    }
+
+    function autoResize(textarea) {
+      textarea.style.height = '0px';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+
+    function parseLinks(text) {
+      return text
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line) => {
+          const m = line.match(/https?:\/\/\S+/);
+          if (!m) return null;
+          const url = m[0];
+          const label = line.replace(url, '').replace(/^-+\s*/, '').replace(/\s*-\s*$/, '').trim() || url;
+          return { label, url };
+        })
+        .filter(Boolean);
+    }
+
+    function renderLinkPreview(text, container) {
+      container.innerHTML = '';
+      const links = parseLinks(text);
+      if (!links.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'Nenhum link detectado neste campo.';
+        container.appendChild(empty);
+        return 0;
+      }
+      links.forEach(({ label, url }) => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = label;
+        container.appendChild(a);
+      });
+      return links.length;
+    }
+
+    function openAllLinks(text) {
+      const links = parseLinks(text);
+      if (!links.length) {
+        window.alert('Nenhum link detectado nesta aula.');
+        return;
+      }
+      let opened = 0;
+      links.forEach(({ url }) => {
+        const w = window.open(url, '_blank', 'noopener,noreferrer');
+        if (w) opened += 1;
+      });
+      if (opened === 0) {
+        window.alert('O navegador bloqueou os pop-ups. Permita pop-ups para abrir todos os links de uma vez.');
+      }
+    }
+
+    function refreshAllTextareas() {
+      document.querySelectorAll('.ref-input').forEach(autoResize);
+    }
+
+    aulas.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      const tdNum = document.createElement('td');
+      const tdMod = document.createElement('td');
+      const tdAulaNum = document.createElement('td');
+      const tdAula = document.createElement('td');
+      const tdRef = document.createElement('td');
+
+      tdNum.className = 'col-num';
+      tdMod.className = 'col-mod';
+      tdAulaNum.className = 'col-aula-num';
+      tdAula.className = 'col-aula';
+      tdRef.className = 'col-ref';
+
+      tdNum.innerHTML = `<span class='pill'>Módulo ${item.modNum}</span>`;
+      tdMod.textContent = item.modNome;
+      tdAulaNum.innerHTML = `<span class='pill'>Aula ${item.aulaNum}</span>`;
+      tdAula.textContent = item.aula;
+
+      const textarea = document.createElement('textarea');
+      textarea.className = 'ref-input';
+      textarea.placeholder = 'Edite ou complemente as referências desta aula...';
+      textarea.value = savedRefs[index] || item.refs || '';
+      const linkPreview = document.createElement('div');
+      linkPreview.className = 'link-preview';
+      const actionRow = document.createElement('div');
+      actionRow.className = 'action-row';
+      const openBtn = document.createElement('button');
+      openBtn.type = 'button';
+      openBtn.className = 'open-links-btn';
+      openBtn.textContent = 'Abrir links da aula';
+      const linkCount = document.createElement('span');
+      linkCount.className = 'link-count';
+      openBtn.addEventListener('click', () => openAllLinks(textarea.value));
+      actionRow.appendChild(openBtn);
+      actionRow.appendChild(linkCount);
+      textarea.addEventListener('input', (event) => {
+        autoResize(event.target);
+        saveRef(index, event.target.value);
+        const total = renderLinkPreview(event.target.value, linkPreview);
+        linkCount.textContent = `${total || 0} link(s) detectado(s)`;
+      });
+      textarea.addEventListener('change', (event) => {
+        autoResize(event.target);
+        saveRef(index, event.target.value);
+        const total = renderLinkPreview(event.target.value, linkPreview);
+        linkCount.textContent = `${total || 0} link(s) detectado(s)`;
+      });
+      tdRef.appendChild(actionRow);
+      tdRef.appendChild(textarea);
+      tdRef.appendChild(linkPreview);
+
+      tr.appendChild(tdNum);
+      tr.appendChild(tdMod);
+      tr.appendChild(tdAulaNum);
+      tr.appendChild(tdAula);
+      tr.appendChild(tdRef);
+      tableBody.appendChild(tr);
+      autoResize(textarea);
+      const total = renderLinkPreview(textarea.value, linkPreview);
+      linkCount.textContent = `${total || 0} link(s) detectado(s)`;
+    });
+
+    const rows = Array.from(document.querySelectorAll('#refTable tbody tr'));
+
+    function filter() {
+      const q = normalize(input.value.trim());
+      let visible = 0;
+      rows.forEach((row) => {
+        const show = !q || normalize(row.innerText).includes(q);
+        row.style.display = show ? '' : 'none';
+        if (show) visible += 1;
+      });
+      paintCount(visible);
+    }
+
+    input.addEventListener('input', filter);
+    window.addEventListener('resize', refreshAllTextareas);
+    window.addEventListener('load', refreshAllTextareas);
+    requestAnimationFrame(refreshAllTextareas);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(refreshAllTextareas);
+    }
+    paintCount(rows.length);
+  </script>
+</body>
+</html>
