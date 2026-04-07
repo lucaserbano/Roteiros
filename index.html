@@ -535,6 +535,36 @@ const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
         .toLowerCase();
     }
 
+    function getRefLineKey(line) {
+      const cleaned = (line || '').trim();
+      if (!cleaned) return '';
+      const urlMatch = cleaned.match(/https?:\/\/\S+/i);
+      if (urlMatch) {
+        return `url:${urlMatch[0].toLowerCase()}`;
+      }
+      return `txt:${normalize(cleaned.replace(/\s+/g, ' '))}`;
+    }
+
+    function mergeSavedWithBaseRefs(savedValue, baseValue) {
+      const savedLines = (savedValue || '').split('\n');
+      const baseLines = (baseValue || '').split('\n');
+      const merged = [];
+      const seen = new Set();
+
+      const appendUnique = (line) => {
+        const cleaned = (line || '').trim();
+        if (!cleaned) return;
+        const key = getRefLineKey(cleaned);
+        if (key && seen.has(key)) return;
+        if (key) seen.add(key);
+        merged.push(cleaned);
+      };
+
+      savedLines.forEach(appendUnique);
+      baseLines.forEach(appendUnique);
+      return merged.join('\n');
+    }
+
     function paintCount(n) {
       count.textContent = `${n} resultado${n === 1 ? '' : 's'}`;
     }
@@ -717,7 +747,14 @@ const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
       const textarea = document.createElement('textarea');
       textarea.className = 'ref-input';
       textarea.placeholder = 'Edite ou complemente as referências desta aula...';
-      textarea.value = savedRefs[index] || item.refs || '';
+      const baseRef = item.refs || '';
+      const hasSavedRef = Object.prototype.hasOwnProperty.call(savedRefs, index);
+      const savedRef = hasSavedRef ? savedRefs[index] : '';
+      const initialRef = hasSavedRef ? mergeSavedWithBaseRefs(savedRef, baseRef) : baseRef;
+      textarea.value = initialRef;
+      if (hasSavedRef && initialRef !== savedRef) {
+        saveRef(index, initialRef);
+      }
       const linkPreview = document.createElement('div');
       linkPreview.className = 'link-preview';
       const actionRow = document.createElement('div');
