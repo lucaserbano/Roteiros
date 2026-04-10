@@ -279,6 +279,7 @@
     </section>
   </main>
 
+  <script src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'></script>
   <script>
     const aulas = [
   {
@@ -507,12 +508,19 @@
   }
 ];
 
-const storageKey = 'lorena_referencias_v1_subtemas';
-const legacyReviewedStorageKey = 'lorena_aulas_revisadas_v1';
-const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
+    const storageKey = 'lorena_referencias_v1_subtemas';
+    const legacyReviewedStorageKey = 'lorena_aulas_revisadas_v1';
+    const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
     const savedRefs = JSON.parse(localStorage.getItem(storageKey) || '{}');
     const savedReviewed = JSON.parse(localStorage.getItem(reviewedStorageKey) || '{}');
     const legacyReviewed = JSON.parse(localStorage.getItem(legacyReviewedStorageKey) || '{}');
+    const SUPABASE_URL = 'https://wxlgkeraiyvornzueikl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4bGdrZXJhaXl2b3JuenVlaWtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MzMzNzMsImV4cCI6MjA5MTQwOTM3M30.5o2TwG2iT4DxsiMYE6oLchxPqHvpOKwaBCViyNRBzbw';
+    const SUPABASE_TABLE = 'aulas_estado';
+    const APP_KEY = storageKey;
+    const supabaseClient = window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
 
     if (!Object.keys(savedReviewed).length && Object.keys(legacyReviewed).length) {
       Object.keys(legacyReviewed).forEach((index) => {
@@ -526,6 +534,9 @@ const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
     const tableBody = document.getElementById('tableBody');
     const input = document.getElementById('search');
     const count = document.getElementById('count');
+    const rowUiByIndex = new Map();
+    const pendingRowSync = new Map();
+    let rows = [];
 
     function normalize(v) {
       return (v || '')
@@ -569,11 +580,6 @@ const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
       count.textContent = `${n} resultado${n === 1 ? '' : 's'}`;
     }
 
-    function saveRef(index, value) {
-      savedRefs[index] = value;
-      localStorage.setItem(storageKey, JSON.stringify(savedRefs));
-    }
-
     function getReviewedState(index) {
       const state = savedReviewed[index];
       if (state && typeof state === 'object') {
@@ -588,6 +594,47 @@ const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
       return { eduardo: false, lucas: false };
     }
 
+    function saveLocalState() {
+      localStorage.setItem(storageKey, JSON.stringify(savedRefs));
+      localStorage.setItem(reviewedStorageKey, JSON.stringify(savedReviewed));
+    }
+
+    function queueRowSync(index) {
+      if (!supabaseClient) return;
+      if (pendingRowSync.has(index)) {
+        clearTimeout(pendingRowSync.get(index));
+      }
+      const timer = setTimeout(() => {
+        pendingRowSync.delete(index);
+        syncRow(index);
+      }, 700);
+      pendingRowSync.set(index, timer);
+    }
+
+    async function syncRow(index) {
+      if (!supabaseClient) return;
+      const reviewedState = getReviewedState(index);
+      const payload = {
+        app_key: APP_KEY,
+        aula_index: index,
+        refs: savedRefs[index] || '',
+        reviewed_eduardo: Boolean(reviewedState.eduardo),
+        reviewed_lucas: Boolean(reviewedState.lucas)
+      };
+      const { error } = await supabaseClient
+        .from(SUPABASE_TABLE)
+        .upsert(payload, { onConflict: 'app_key,aula_index' });
+      if (error) {
+        console.error('Falha ao salvar linha no Supabase:', error.message);
+      }
+    }
+
+    function saveRef(index, value) {
+      savedRefs[index] = value;
+      saveLocalState();
+      queueRowSync(index);
+    }
+
     function saveReviewed(index, reviewer, value) {
       const current = getReviewedState(index);
       current[reviewer] = value;
@@ -596,7 +643,8 @@ const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
       } else {
         delete savedReviewed[index];
       }
-      localStorage.setItem(reviewedStorageKey, JSON.stringify(savedReviewed));
+      saveLocalState();
+      queueRowSync(index);
     }
 
     function autoResize(textarea) {
@@ -660,144 +708,244 @@ const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
       document.querySelectorAll('.ref-input').forEach(autoResize);
     }
 
-    aulas.forEach((item, index) => {
-      const tr = document.createElement('tr');
-      const tdNum = document.createElement('td');
-      const tdMod = document.createElement('td');
-      const tdAulaNum = document.createElement('td');
-      const tdAula = document.createElement('td');
-      const tdReview = document.createElement('td');
-      const tdRef = document.createElement('td');
-
-      tdNum.className = 'col-num';
-      tdMod.className = 'col-mod';
-      tdAulaNum.className = 'col-aula-num';
-      tdAula.className = 'col-aula';
-      tdReview.className = 'col-review';
-      tdRef.className = 'col-ref';
-
-      tdNum.innerHTML = `<span class='pill'>Módulo ${item.modNum}</span>`;
-      tdMod.textContent = item.modNome;
-      tdAulaNum.innerHTML = `<span class='pill'>Aula ${item.aulaNum}</span>`;
-      tdAula.textContent = item.aula;
-
-      const reviewWrap = document.createElement('div');
-      reviewWrap.className = 'review-wrap';
-      const reviewGrid = document.createElement('div');
-      reviewGrid.className = 'review-grid';
-      const reviewState = getReviewedState(index);
-      const eduardoToggle = document.createElement('label');
-      eduardoToggle.className = 'review-toggle';
-      const eduardoCheckbox = document.createElement('input');
-      eduardoCheckbox.type = 'checkbox';
-      eduardoCheckbox.className = 'review-checkbox';
-      eduardoCheckbox.checked = reviewState.eduardo;
-      eduardoCheckbox.setAttribute('aria-label', `Marcar aula ${item.aulaNum} como revisada por Eduardo`);
-      const eduardoToggleText = document.createElement('span');
-      eduardoToggleText.textContent = 'Eduardo';
-      eduardoToggle.appendChild(eduardoCheckbox);
-      eduardoToggle.appendChild(eduardoToggleText);
-      const lucasToggle = document.createElement('label');
-      lucasToggle.className = 'review-toggle';
-      const lucasCheckbox = document.createElement('input');
-      lucasCheckbox.type = 'checkbox';
-      lucasCheckbox.className = 'review-checkbox';
-      lucasCheckbox.checked = reviewState.lucas;
-      lucasCheckbox.setAttribute('aria-label', `Marcar aula ${item.aulaNum} como revisada por Lucas`);
-      const lucasToggleText = document.createElement('span');
-      lucasToggleText.textContent = 'Lucas';
-      lucasToggle.appendChild(lucasCheckbox);
-      lucasToggle.appendChild(lucasToggleText);
-      reviewGrid.appendChild(eduardoToggle);
-      reviewGrid.appendChild(lucasToggle);
-      const reviewStatus = document.createElement('span');
-      reviewStatus.className = 'review-status';
-      reviewWrap.appendChild(reviewGrid);
-      reviewWrap.appendChild(reviewStatus);
-      tdReview.appendChild(reviewWrap);
-
-      const updateReviewState = (eduardoChecked, lucasChecked) => {
-        const reviewedByAnyone = eduardoChecked || lucasChecked;
-        const reviewedByBoth = eduardoChecked && lucasChecked;
-        if (reviewedByBoth) {
-          reviewStatus.textContent = 'Revisada por Eduardo e Lucas';
-        } else if (eduardoChecked) {
-          reviewStatus.textContent = 'Revisada por Eduardo';
-        } else if (lucasChecked) {
-          reviewStatus.textContent = 'Revisada por Lucas';
-        } else {
-          reviewStatus.textContent = 'Ainda não revisada';
-        }
-        reviewStatus.classList.toggle('done', reviewedByBoth);
-        reviewStatus.classList.toggle('partial', reviewedByAnyone && !reviewedByBoth);
-        tr.classList.toggle('is-reviewed-partial', reviewedByAnyone && !reviewedByBoth);
-        tr.classList.toggle('is-reviewed-all', reviewedByBoth);
-      };
-      eduardoCheckbox.addEventListener('change', (event) => {
-        const checked = event.target.checked;
-        saveReviewed(index, 'eduardo', checked);
-        updateReviewState(checked, lucasCheckbox.checked);
-      });
-      lucasCheckbox.addEventListener('change', (event) => {
-        const checked = event.target.checked;
-        saveReviewed(index, 'lucas', checked);
-        updateReviewState(eduardoCheckbox.checked, checked);
-      });
-
-      const textarea = document.createElement('textarea');
-      textarea.className = 'ref-input';
-      textarea.placeholder = 'Edite ou complemente as referências desta aula...';
-      const baseRef = item.refs || '';
-      const hasSavedRef = Object.prototype.hasOwnProperty.call(savedRefs, index);
-      const savedRef = hasSavedRef ? savedRefs[index] : '';
-      const initialRef = hasSavedRef ? mergeSavedWithBaseRefs(savedRef, baseRef) : baseRef;
-      textarea.value = initialRef;
-      if (hasSavedRef && initialRef !== savedRef) {
-        saveRef(index, initialRef);
+    function applyRemoteRow(row) {
+      if (!row) return;
+      const index = Number(row.aula_index);
+      if (!Number.isInteger(index)) return;
+      if (typeof row.refs === 'string') {
+        savedRefs[index] = row.refs;
       }
-      const linkPreview = document.createElement('div');
-      linkPreview.className = 'link-preview';
-      const actionRow = document.createElement('div');
-      actionRow.className = 'action-row';
-      const openBtn = document.createElement('button');
-      openBtn.type = 'button';
-      openBtn.className = 'open-links-btn';
-      openBtn.textContent = 'Abrir links da aula';
-      const linkCount = document.createElement('span');
-      linkCount.className = 'link-count';
-      openBtn.addEventListener('click', () => openAllLinks(textarea.value));
-      actionRow.appendChild(openBtn);
-      actionRow.appendChild(linkCount);
-      textarea.addEventListener('input', (event) => {
-        autoResize(event.target);
-        saveRef(index, event.target.value);
-        const total = renderLinkPreview(event.target.value, linkPreview);
-        linkCount.textContent = `${total || 0} link(s) detectado(s)`;
-      });
-      textarea.addEventListener('change', (event) => {
-        autoResize(event.target);
-        saveRef(index, event.target.value);
-        const total = renderLinkPreview(event.target.value, linkPreview);
-        linkCount.textContent = `${total || 0} link(s) detectado(s)`;
-      });
-      tdRef.appendChild(actionRow);
-      tdRef.appendChild(textarea);
-      tdRef.appendChild(linkPreview);
+      savedReviewed[index] = {
+        eduardo: Boolean(row.reviewed_eduardo),
+        lucas: Boolean(row.reviewed_lucas)
+      };
+      saveLocalState();
+      const ui = rowUiByIndex.get(index);
+      if (!ui) return;
 
-      tr.appendChild(tdNum);
-      tr.appendChild(tdMod);
-      tr.appendChild(tdAulaNum);
-      tr.appendChild(tdAula);
-      tr.appendChild(tdReview);
-      tr.appendChild(tdRef);
-      tableBody.appendChild(tr);
-      autoResize(textarea);
-      const total = renderLinkPreview(textarea.value, linkPreview);
-      linkCount.textContent = `${total || 0} link(s) detectado(s)`;
-      updateReviewState(eduardoCheckbox.checked, lucasCheckbox.checked);
-    });
+      if (typeof row.refs === 'string' && document.activeElement !== ui.textarea) {
+        ui.textarea.value = row.refs;
+        autoResize(ui.textarea);
+        const total = renderLinkPreview(row.refs, ui.linkPreview);
+        ui.linkCount.textContent = `${total || 0} link(s) detectado(s)`;
+      }
+      if (document.activeElement !== ui.eduardoCheckbox) {
+        ui.eduardoCheckbox.checked = Boolean(row.reviewed_eduardo);
+      }
+      if (document.activeElement !== ui.lucasCheckbox) {
+        ui.lucasCheckbox.checked = Boolean(row.reviewed_lucas);
+      }
+      ui.updateReviewState(ui.eduardoCheckbox.checked, ui.lucasCheckbox.checked);
+    }
 
-    const rows = Array.from(document.querySelectorAll('#refTable tbody tr'));
+    async function loadRemoteState() {
+      if (!supabaseClient) return;
+      const { data, error } = await supabaseClient
+        .from(SUPABASE_TABLE)
+        .select('aula_index, refs, reviewed_eduardo, reviewed_lucas')
+        .eq('app_key', APP_KEY);
+      if (error) {
+        console.error('Falha ao carregar estado do Supabase:', error.message);
+        return 0;
+      }
+      data.forEach(applyRemoteRow);
+      return data.length;
+    }
+
+    async function backfillRemoteFromLocal() {
+      if (!supabaseClient) return;
+      const allIndexes = new Set([
+        ...Object.keys(savedRefs),
+        ...Object.keys(savedReviewed)
+      ]);
+      const payload = Array.from(allIndexes)
+        .map((indexText) => {
+          const index = Number(indexText);
+          const reviewedState = getReviewedState(index);
+          return {
+            app_key: APP_KEY,
+            aula_index: index,
+            refs: savedRefs[index] || '',
+            reviewed_eduardo: Boolean(reviewedState.eduardo),
+            reviewed_lucas: Boolean(reviewedState.lucas)
+          };
+        })
+        .filter((item) => (
+          Number.isInteger(item.aula_index)
+          && (item.refs.trim() || item.reviewed_eduardo || item.reviewed_lucas)
+        ));
+      if (!payload.length) return;
+      const { error } = await supabaseClient
+        .from(SUPABASE_TABLE)
+        .upsert(payload, { onConflict: 'app_key,aula_index' });
+      if (error) {
+        console.error('Falha no backfill local->Supabase:', error.message);
+      }
+    }
+
+    function subscribeRemoteState() {
+      if (!supabaseClient) return;
+      supabaseClient
+        .channel(`aulas-review-${APP_KEY}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: SUPABASE_TABLE, filter: `app_key=eq.${APP_KEY}` },
+          (payload) => {
+            applyRemoteRow(payload.new || payload.old);
+          }
+        )
+        .subscribe();
+    }
+
+    function renderTable() {
+      aulas.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const tdNum = document.createElement('td');
+        const tdMod = document.createElement('td');
+        const tdAulaNum = document.createElement('td');
+        const tdAula = document.createElement('td');
+        const tdReview = document.createElement('td');
+        const tdRef = document.createElement('td');
+
+        tdNum.className = 'col-num';
+        tdMod.className = 'col-mod';
+        tdAulaNum.className = 'col-aula-num';
+        tdAula.className = 'col-aula';
+        tdReview.className = 'col-review';
+        tdRef.className = 'col-ref';
+
+        tdNum.innerHTML = `<span class='pill'>Módulo ${item.modNum}</span>`;
+        tdMod.textContent = item.modNome;
+        tdAulaNum.innerHTML = `<span class='pill'>Aula ${item.aulaNum}</span>`;
+        tdAula.textContent = item.aula;
+
+        const reviewWrap = document.createElement('div');
+        reviewWrap.className = 'review-wrap';
+        const reviewGrid = document.createElement('div');
+        reviewGrid.className = 'review-grid';
+        const reviewState = getReviewedState(index);
+        const eduardoToggle = document.createElement('label');
+        eduardoToggle.className = 'review-toggle';
+        const eduardoCheckbox = document.createElement('input');
+        eduardoCheckbox.type = 'checkbox';
+        eduardoCheckbox.className = 'review-checkbox';
+        eduardoCheckbox.checked = reviewState.eduardo;
+        eduardoCheckbox.setAttribute('aria-label', `Marcar aula ${item.aulaNum} como revisada por Eduardo`);
+        const eduardoToggleText = document.createElement('span');
+        eduardoToggleText.textContent = 'Eduardo';
+        eduardoToggle.appendChild(eduardoCheckbox);
+        eduardoToggle.appendChild(eduardoToggleText);
+        const lucasToggle = document.createElement('label');
+        lucasToggle.className = 'review-toggle';
+        const lucasCheckbox = document.createElement('input');
+        lucasCheckbox.type = 'checkbox';
+        lucasCheckbox.className = 'review-checkbox';
+        lucasCheckbox.checked = reviewState.lucas;
+        lucasCheckbox.setAttribute('aria-label', `Marcar aula ${item.aulaNum} como revisada por Lucas`);
+        const lucasToggleText = document.createElement('span');
+        lucasToggleText.textContent = 'Lucas';
+        lucasToggle.appendChild(lucasCheckbox);
+        lucasToggle.appendChild(lucasToggleText);
+        reviewGrid.appendChild(eduardoToggle);
+        reviewGrid.appendChild(lucasToggle);
+        const reviewStatus = document.createElement('span');
+        reviewStatus.className = 'review-status';
+        reviewWrap.appendChild(reviewGrid);
+        reviewWrap.appendChild(reviewStatus);
+        tdReview.appendChild(reviewWrap);
+
+        const updateReviewState = (eduardoChecked, lucasChecked) => {
+          const reviewedByAnyone = eduardoChecked || lucasChecked;
+          const reviewedByBoth = eduardoChecked && lucasChecked;
+          if (reviewedByBoth) {
+            reviewStatus.textContent = 'Revisada por Eduardo e Lucas';
+          } else if (eduardoChecked) {
+            reviewStatus.textContent = 'Revisada por Eduardo';
+          } else if (lucasChecked) {
+            reviewStatus.textContent = 'Revisada por Lucas';
+          } else {
+            reviewStatus.textContent = 'Ainda não revisada';
+          }
+          reviewStatus.classList.toggle('done', reviewedByBoth);
+          reviewStatus.classList.toggle('partial', reviewedByAnyone && !reviewedByBoth);
+          tr.classList.toggle('is-reviewed-partial', reviewedByAnyone && !reviewedByBoth);
+          tr.classList.toggle('is-reviewed-all', reviewedByBoth);
+        };
+        eduardoCheckbox.addEventListener('change', (event) => {
+          const checked = event.target.checked;
+          saveReviewed(index, 'eduardo', checked);
+          updateReviewState(checked, lucasCheckbox.checked);
+        });
+        lucasCheckbox.addEventListener('change', (event) => {
+          const checked = event.target.checked;
+          saveReviewed(index, 'lucas', checked);
+          updateReviewState(eduardoCheckbox.checked, checked);
+        });
+
+        const textarea = document.createElement('textarea');
+        textarea.className = 'ref-input';
+        textarea.placeholder = 'Edite ou complemente as referências desta aula...';
+        const baseRef = item.refs || '';
+        const hasSavedRef = Object.prototype.hasOwnProperty.call(savedRefs, index);
+        const savedRef = hasSavedRef ? savedRefs[index] : '';
+        const initialRef = hasSavedRef ? mergeSavedWithBaseRefs(savedRef, baseRef) : baseRef;
+        textarea.value = initialRef;
+        if (hasSavedRef && initialRef !== savedRef) {
+          saveRef(index, initialRef);
+        }
+        const linkPreview = document.createElement('div');
+        linkPreview.className = 'link-preview';
+        const actionRow = document.createElement('div');
+        actionRow.className = 'action-row';
+        const openBtn = document.createElement('button');
+        openBtn.type = 'button';
+        openBtn.className = 'open-links-btn';
+        openBtn.textContent = 'Abrir links da aula';
+        const linkCount = document.createElement('span');
+        linkCount.className = 'link-count';
+        openBtn.addEventListener('click', () => openAllLinks(textarea.value));
+        actionRow.appendChild(openBtn);
+        actionRow.appendChild(linkCount);
+        textarea.addEventListener('input', (event) => {
+          autoResize(event.target);
+          saveRef(index, event.target.value);
+          const total = renderLinkPreview(event.target.value, linkPreview);
+          linkCount.textContent = `${total || 0} link(s) detectado(s)`;
+        });
+        textarea.addEventListener('change', (event) => {
+          autoResize(event.target);
+          saveRef(index, event.target.value);
+          const total = renderLinkPreview(event.target.value, linkPreview);
+          linkCount.textContent = `${total || 0} link(s) detectado(s)`;
+        });
+        tdRef.appendChild(actionRow);
+        tdRef.appendChild(textarea);
+        tdRef.appendChild(linkPreview);
+
+        tr.appendChild(tdNum);
+        tr.appendChild(tdMod);
+        tr.appendChild(tdAulaNum);
+        tr.appendChild(tdAula);
+        tr.appendChild(tdReview);
+        tr.appendChild(tdRef);
+        tableBody.appendChild(tr);
+        autoResize(textarea);
+        const total = renderLinkPreview(textarea.value, linkPreview);
+        linkCount.textContent = `${total || 0} link(s) detectado(s)`;
+        updateReviewState(eduardoCheckbox.checked, lucasCheckbox.checked);
+
+        rowUiByIndex.set(index, {
+          textarea,
+          linkPreview,
+          linkCount,
+          eduardoCheckbox,
+          lucasCheckbox,
+          updateReviewState
+        });
+      });
+
+      rows = Array.from(document.querySelectorAll('#refTable tbody tr'));
+    }
 
     function filter() {
       const q = normalize(input.value.trim());
@@ -810,14 +958,24 @@ const reviewedStorageKey = 'lorena_aulas_revisadas_v2';
       paintCount(visible);
     }
 
-    input.addEventListener('input', filter);
-    window.addEventListener('resize', refreshAllTextareas);
-    window.addEventListener('load', refreshAllTextareas);
-    requestAnimationFrame(refreshAllTextareas);
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(refreshAllTextareas);
+    async function init() {
+      const remoteCount = await loadRemoteState();
+      if (remoteCount === 0) {
+        await backfillRemoteFromLocal();
+      }
+      renderTable();
+      input.addEventListener('input', filter);
+      window.addEventListener('resize', refreshAllTextareas);
+      window.addEventListener('load', refreshAllTextareas);
+      requestAnimationFrame(refreshAllTextareas);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(refreshAllTextareas);
+      }
+      paintCount(rows.length);
+      subscribeRemoteState();
     }
-    paintCount(rows.length);
+
+    init();
   </script>
 </body>
 </html>
