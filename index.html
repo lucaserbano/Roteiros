@@ -3,7 +3,7 @@
 <head>
   <meta charset='utf-8' />
   <meta name='viewport' content='width=device-width, initial-scale=1' />
-  <title>Tabela Controle Codex - Talitah</title>
+  <title>Tabela Controle Codex - Lorena e Luis</title>
   <style>
     :root {
       --bg:#f5f7fb;
@@ -66,7 +66,12 @@
     .count { color:var(--muted); font-size:13px; }
 
     .table-wrap { overflow:auto; max-height:calc(100vh - 215px); }
-    table { width:100%; border-collapse:separate; border-spacing:0; min-width:1560px; }
+    table {
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      table-layout:fixed;
+    }
 
     thead th {
       position:sticky;
@@ -79,6 +84,8 @@
       font-weight:700;
       font-size:13px;
       padding:10px 12px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
     tbody td {
       border-bottom:1px solid var(--line);
@@ -86,16 +93,19 @@
       padding:12px;
       font-size:14px;
       line-height:1.35;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
     tbody tr:nth-child(even) td { background:#fcfdff; }
     tbody tr:hover td { background:#f7fbff; }
 
-    .col-num { width:11%; min-width:145px; }
-    .col-mod { width:18%; min-width:210px; }
-    .col-aula-num { width:11%; min-width:145px; }
-    .col-aula { width:30%; min-width:420px; }
-    .col-review { width:14%; min-width:210px; }
-    .col-ref { width:22%; min-width:320px; }
+    .col-num { width:8%; }
+    .col-mod { width:12%; }
+    .col-aula-num { width:8%; }
+    .col-prof { width:12%; }
+    .col-aula { width:18%; }
+    .col-review { width:14%; }
+    .col-ref { width:28%; }
 
     .pill {
       display:inline-block;
@@ -121,6 +131,9 @@
       font-size:13px;
       line-height:1.4;
       font-family:ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
     textarea.ref-input:focus {
       outline:none;
@@ -141,7 +154,9 @@
       color:var(--link);
       text-decoration:none;
       border-bottom:1px dashed rgba(11,99,206,.35);
-      width:fit-content;
+      width:100%;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
     .link-preview a:hover {
       text-decoration:underline;
@@ -239,7 +254,7 @@
       .head h1 { font-size:18px; }
       .search { min-width:unset; width:100%; }
       .table-wrap { max-height:calc(100vh - 255px); }
-	      table { min-width:1220px; }
+      table { table-layout:fixed; }
     }
   </style>
 </head>
@@ -247,7 +262,7 @@
   <main class='wrap'>
     <section class='card'>
       <header class='head'>
-        <h1>Tabela de Controle - Aulas da Professora Lorena</h1>
+        <h1>Tabela de Controle - Aulas por Professor</h1>
         <p>65 aulas (somente subtemas, sem casos), com referências de livros, UpToDate e diretrizes/consensos nacionais e internacionais.</p>
       </header>
 
@@ -267,6 +282,7 @@
               <th>Nome do módulo</th>
               <th>Número da aula</th>
               <th>Nome da aula</th>
+              <th>Professor</th>
               <th>Revisão</th>
               <th>Referências</th>
             </tr>
@@ -511,233 +527,247 @@
     "modNome": "Gastro e Hemato",
     "aulaNum": 13,
     "aula": "Anemia grave - quando transfundir?",
-    "refs": "Nelson - capítulo 519 (RED BLOOD CELL TRANSFUSIONS AND BLOOD SUBSTITUTES); capítulo 496 (ANEMIAS)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 27, capítulo Medicina transfusional em pediatria\nhttps://www.uptodate.com/contents/red-blood-cell-transfusion-in-infants-and-children-indications\nhttps://www.uptodate.com/contents/red-blood-cell-transfusion-in-infants-and-children-administration-and-complications\nhttps://www.uptodate.com/contents/red-blood-cell-transfusion-in-infants-and-children-selection-of-blood-products"
+    "refs": "Nelson - capítulo 519 (RED BLOOD CELL TRANSFUSIONS AND BLOOD SUBSTITUTES); capítulo 496 (ANEMIAS)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 27, capítulo Medicina transfusional em pediatria\nhttps://www.uptodate.com/contents/red-blood-cell-transfusion-in-infants-and-children-indications\nhttps://www.uptodate.com/contents/red-blood-cell-transfusion-in-infants-and-children-administration-and-complications\nhttps://www.uptodate.com/contents/red-blood-cell-transfusion-in-infants-and-children-selection-of-blood-products\nDiretrizes/consensos atualizados:\nAABB International Guideline for Red Blood Cell Transfusion (JAMA, 2023): https://pubmed.ncbi.nlm.nih.gov/37824153/\nNICE NG24 Blood transfusion (atualizado em 26/02/2026): https://www.nice.org.uk/guidance/ng24\nPDF NICE NG24 (full guideline): https://www.nice.org.uk/guidance/ng24/evidence/full-guideline-pdf-2177160733"
   },
   {
     "modNum": 6,
     "modNome": "Gastro e Hemato",
     "aulaNum": 14,
     "aula": "Manejo da dor na anemia falciforme",
-    "refs": "Nelson - capítulo 511.1 (Sickle Cell Disease)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 27, capítulo Hemoglobinopatias\nhttps://www.uptodate.com/contents/acute-vaso-occlusive-pain-management-in-sickle-cell-disease-children-and-adults\nhttps://www.uptodate.com/contents/evaluation-of-acute-pain-in-sickle-cell-disease\nhttps://www.uptodate.com/contents/overview-of-the-clinical-manifestations-of-sickle-cell-disease"
+    "refs": "Nelson - capítulo 511.1 (Sickle Cell Disease)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 27, capítulo Hemoglobinopatias\nhttps://www.uptodate.com/contents/acute-vaso-occlusive-pain-management-in-sickle-cell-disease-children-and-adults\nhttps://www.uptodate.com/contents/evaluation-of-acute-pain-in-sickle-cell-disease\nhttps://www.uptodate.com/contents/overview-of-the-clinical-manifestations-of-sickle-cell-disease\nDiretrizes/consensos atualizados:\nASH guideline (2020) para dor aguda e crônica na doença falciforme: https://pubmed.ncbi.nlm.nih.gov/32559294/\nASH guideline (2020) para suporte transfusional na doença falciforme: https://pubmed.ncbi.nlm.nih.gov/31985807/\nNICE CG143 (sickle cell acute painful episode): https://www.ncbi.nlm.nih.gov/books/NBK126761/"
   },
   {
     "modNum": 6,
     "modNome": "Gastro e Hemato",
     "aulaNum": 15,
     "aula": "A criança com doença oncológica e com febre",
-    "refs": "Nelson - capítulo 223 (INFECTIONS IN IMMUNOCOMPROMISED PERSONS); capítulo 543 (PRINCIPLES OF CANCER TREATMENT)\nTratado volume 1, seção 20, capítulo Febre sem sinais localizatórios\nTratado volume 2, seção 26, capítulo Emergências oncológicas\nhttps://www.uptodate.com/contents/fever-in-children-with-chemotherapy-induced-neutropenia\nhttps://www.uptodate.com/contents/evaluation-of-neutropenia-in-children-and-adolescents\nhttps://www.uptodate.com/contents/children-with-non-chemotherapy-induced-neutropenia-and-fever-management"
+    "refs": "Nelson - capítulo 223 (INFECTIONS IN IMMUNOCOMPROMISED PERSONS); capítulo 543 (PRINCIPLES OF CANCER TREATMENT)\nTratado volume 1, seção 20, capítulo Febre sem sinais localizatórios\nTratado volume 2, seção 26, capítulo Emergências oncológicas\nhttps://www.uptodate.com/contents/fever-in-children-with-chemotherapy-induced-neutropenia\nhttps://www.uptodate.com/contents/evaluation-of-neutropenia-in-children-and-adolescents\nhttps://www.uptodate.com/contents/children-with-non-chemotherapy-induced-neutropenia-and-fever-management\nDiretrizes/consensos atualizados:\nNICE CG151 Neutropenic sepsis (oncologia): https://www.nice.org.uk/guidance/cg151\nTexto consolidado NICE CG151 (NCBI): https://www.ncbi.nlm.nih.gov/books/NBK612074/"
   },
   {
     "modNum": 6,
     "modNome": "Gastro e Hemato",
     "aulaNum": 16,
     "aula": "Como tratar vomitos?",
-    "refs": "Nelson - capítulo 390 (CYCLIC VOMITING SYNDROME); capítulo 387 (ACUTE GASTROENTERITIS IN CHILDREN)\nTratado volume 1, seção 17, capítulo Distúrbios gastrointestinais funcionais na criança e no adolescente\nTratado volume 2, seção 35, capítulo Obstrução pilórica\nhttps://www.uptodate.com/contents/approach-to-the-infant-or-child-with-nausea-and-vomiting\nhttps://www.uptodate.com/contents/nausea-and-vomiting-in-infants-and-children-beyond-the-basics\nhttps://www.uptodate.com/contents/emergency-evaluation-of-the-child-with-acute-abdominal-pain"
+    "refs": "Nelson - capítulo 390 (CYCLIC VOMITING SYNDROME); capítulo 387 (ACUTE GASTROENTERITIS IN CHILDREN)\nTratado volume 1, seção 17, capítulo Distúrbios gastrointestinais funcionais na criança e no adolescente\nTratado volume 2, seção 35, capítulo Obstrução pilórica\nhttps://www.uptodate.com/contents/approach-to-the-infant-or-child-with-nausea-and-vomiting\nhttps://www.uptodate.com/contents/nausea-and-vomiting-in-infants-and-children-beyond-the-basics\nhttps://www.uptodate.com/contents/emergency-evaluation-of-the-child-with-acute-abdominal-pain\nDiretrizes/consensos atualizados:\nNASPGHAN 2025 (manejo de síndrome do vômito cíclico): https://pubmed.ncbi.nlm.nih.gov/40223700/\nNASPGHAN 2025 (diagnóstico de síndrome do vômito cíclico): https://pubmed.ncbi.nlm.nih.gov/40836301/\nNICE CG84 (diarreia/vômitos por gastroenterite em <5 anos): https://www.ncbi.nlm.nih.gov/books/NBK608567/"
   },
   {
     "modNum": 6,
     "modNome": "Gastro e Hemato",
     "aulaNum": 17,
     "aula": "Insuficiencia hepatica - diagnostico e conduta",
-    "refs": "Nelson - capítulo 412 (ACUTE HEPATIC FAILURE); capítulo 403 (MANIFESTATIONS OF LIVER DISEASE)\nTratado volume 1, seção 18, capítulo Insuficiência hepática aguda\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/acute-liver-failure-in-children-etiology-and-evaluation\nhttps://www.uptodate.com/contents/acute-liver-failure-in-children-management-complications-and-outcomes\nhttps://www.uptodate.com/contents/approach-to-the-patient-with-abnormal-liver-tests"
+    "refs": "Nelson - capítulo 412 (ACUTE HEPATIC FAILURE); capítulo 403 (MANIFESTATIONS OF LIVER DISEASE)\nTratado volume 1, seção 18, capítulo Insuficiência hepática aguda\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/acute-liver-failure-in-children-etiology-and-evaluation\nhttps://www.uptodate.com/contents/acute-liver-failure-in-children-management-complications-and-outcomes\nhttps://www.uptodate.com/contents/approach-to-the-patient-with-abnormal-liver-tests\nDiretrizes/consensos atualizados:\nISPGHAN 2024 consenso para insuficiência hepática aguda pediátrica: https://pubmed.ncbi.nlm.nih.gov/39212863/\nAtualização ISPGHAN 2024 (Indian Pediatrics): https://pubmed.ncbi.nlm.nih.gov/39450687/\nAASLD Practice Guidance (acute liver failure): https://www.aasld.org/practice-guidelines/management-acute-liver-failure"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 9,
     "aula": "Hipertensão arterial na infancia",
-    "refs": "Nelson - capítulo 494 (SYSTEMIC HYPERTENSION)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 22, capítulo Atualização no diagnóstico e tratamento da hipertensão arterial\nhttps://www.uptodate.com/contents/hypertension-in-children-and-adolescents-definition-and-diagnosis\nhttps://www.uptodate.com/contents/hypertension-in-children-and-adolescents-evaluation\nhttps://www.uptodate.com/contents/hypertension-in-children-and-adolescents-nonemergency-treatment"
+    "refs": "Nelson - capítulo 494 (SYSTEMIC HYPERTENSION)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 22, capítulo Atualização no diagnóstico e tratamento da hipertensão arterial\nhttps://www.uptodate.com/contents/hypertension-in-children-and-adolescents-definition-and-diagnosis\nhttps://www.uptodate.com/contents/hypertension-in-children-and-adolescents-evaluation\nhttps://www.uptodate.com/contents/hypertension-in-children-and-adolescents-nonemergency-treatment\nDiretrizes/consensos atualizados:\nDiretrizes Brasileiras de Hipertensão Arterial 2020 (capítulo pediátrico): https://www.sbh.org.br/wp-content/uploads/2025/01/2020-Diretrizes-Brasileiras-HA.pdf\nAHA Scientific Statement 2023 (pediatric primary hypertension): https://pubmed.ncbi.nlm.nih.gov/36994715/\nJoint statement 2023 para HAS em crianças/adolescentes: https://pubmed.ncbi.nlm.nih.gov/37124176/"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 10,
     "aula": "Insuficiencia cardíaca - como manejar",
-    "refs": "Nelson - capítulo 491 (HEART FAILURE)\nTratado volume 1, seção 14, capítulo Insuficiência cardíaca na criança\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/heart-failure-in-children-etiology-clinical-manifestations-and-diagnosis\nhttps://www.uptodate.com/contents/heart-failure-in-children-management\nhttps://www.uptodate.com/contents/clinical-manifestations-and-diagnosis-of-myocarditis-in-children"
+    "refs": "Nelson - capítulo 491 (HEART FAILURE)\nTratado volume 1, seção 14, capítulo Insuficiência cardíaca na criança\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/heart-failure-in-children-etiology-clinical-manifestations-and-diagnosis\nhttps://www.uptodate.com/contents/heart-failure-in-children-management\nhttps://www.uptodate.com/contents/clinical-manifestations-and-diagnosis-of-myocarditis-in-children\nDiretrizes/consensos atualizados:\nAHA Scientific Statement (HF em crianças/adolescentes com cardiopatia congênita; resumo ACC, 2025): https://www.acc.org/latest-in-cardiology/articles/2025/06/03/11/04/aha-scientific-statement-on-hf-in-children-with-congenital-heart-disease\nAHA Scientific Statement (miocardite na pediatria, 2021): https://pubmed.ncbi.nlm.nih.gov/34229446/\nAAP Clinical Report 2024/2025 para triagem CCHD (contexto cardiopatia congênita): https://pubmed.ncbi.nlm.nih.gov/39679594/"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 11,
     "aula": "O RN com choque - pode ser cardiopatia?",
-    "refs": "Nelson - capítulo 478 (CYANOTIC CONGENITAL HEART DISEASE: EVALUATION OF THE CRITICALLY ILL NEONATE WITH CYANOSIS AND RESPIRATORY DISTRESS); capítulo 491.1 (Cardiogenic Shock)\nTratado volume 1, seção 14, capítulo Principais cardiopatias com apresentação no período neonatal\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/evaluation-of-suspected-critical-congenital-heart-disease-chd-in-the-newborn\nhttps://www.uptodate.com/contents/approach-to-cyanosis-in-the-newborn\nhttps://www.uptodate.com/contents/cyanotic-congenital-heart-disease-in-the-newborn"
+    "refs": "Nelson - capítulo 478 (CYANOTIC CONGENITAL HEART DISEASE: EVALUATION OF THE CRITICALLY ILL NEONATE WITH CYANOSIS AND RESPIRATORY DISTRESS); capítulo 491.1 (Cardiogenic Shock)\nTratado volume 1, seção 14, capítulo Principais cardiopatias com apresentação no período neonatal\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/evaluation-of-suspected-critical-congenital-heart-disease-chd-in-the-newborn\nhttps://www.uptodate.com/contents/approach-to-cyanosis-in-the-newborn\nhttps://www.uptodate.com/contents/cyanotic-congenital-heart-disease-in-the-newborn\nDiretrizes/consensos atualizados:\nAAP Clinical Report 2024/2025 (novo algoritmo de triagem de CCHD): https://pubmed.ncbi.nlm.nih.gov/39679594/\nCDC 2025 - Screening for Critical Congenital Heart Defects: https://www.cdc.gov/heart-defects/screening/index.html\nComentário/implementação das recomendações AAP (2025): https://pubmed.ncbi.nlm.nih.gov/40316755/"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 12,
     "aula": "Arritmias - o que o pediatra precisa saber",
-    "refs": "Nelson - capítulo 484 (DISTURBANCES OF RATE AND RHYTHM OF THE HEART)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/irregular-heart-rhythm-arrhythmias-in-children\nhttps://www.uptodate.com/contents/approach-to-the-child-with-syncope\nhttps://www.uptodate.com/contents/supraventricular-tachycardia-in-children"
+    "refs": "Nelson - capítulo 484 (DISTURBANCES OF RATE AND RHYTHM OF THE HEART)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/irregular-heart-rhythm-arrhythmias-in-children\nhttps://www.uptodate.com/contents/approach-to-the-child-with-syncope\nhttps://www.uptodate.com/contents/supraventricular-tachycardia-in-children\nDiretrizes/consensos atualizados:\nESC Guidelines 2018 (síncope/estratificação de risco arrítmico): https://www.sigg.it/wp-content/uploads/2018/11/2018.ESC-Syncope-Guidelines.pdf\nPractical instructions ESC 2018 (uso prático em emergência): https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2018/04/04/15/09/Practical-Instructions-for-the-2018-ESC-Guidelines-for-Syncope\nAHA PALS Digital Reference Card (2025 update): https://ebooks.heart.org/product/pals-digital-reference-card"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 13,
     "aula": "O bebê com cianose - cardiopatias congenitas cianoticas",
-    "refs": "Nelson - capítulo 478 (CYANOTIC CONGENITAL HEART DISEASE: EVALUATION OF THE CRITICALLY ILL NEONATE WITH CYANOSIS AND RESPIRATORY DISTRESS); capítulo 479 (CYANOTIC CONGENITAL HEART DISEASE: LESIONS ASSOCIATED WITH DECREASED PULMONARY BLOOD FLOW)\nTratado volume 1, seção 14, capítulo Principais cardiopatias congênitas: reconhecimento e conduta; capítulo Principais cardiopatias com apresentação no período neonatal\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/approach-to-cyanosis-in-the-newborn\nhttps://www.uptodate.com/contents/cyanotic-congenital-heart-disease-in-the-newborn\nhttps://www.uptodate.com/contents/evaluation-of-suspected-critical-congenital-heart-disease-chd-in-the-newborn"
+    "refs": "Nelson - capítulo 478 (CYANOTIC CONGENITAL HEART DISEASE: EVALUATION OF THE CRITICALLY ILL NEONATE WITH CYANOSIS AND RESPIRATORY DISTRESS); capítulo 479 (CYANOTIC CONGENITAL HEART DISEASE: LESIONS ASSOCIATED WITH DECREASED PULMONARY BLOOD FLOW)\nTratado volume 1, seção 14, capítulo Principais cardiopatias congênitas: reconhecimento e conduta; capítulo Principais cardiopatias com apresentação no período neonatal\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/approach-to-cyanosis-in-the-newborn\nhttps://www.uptodate.com/contents/cyanotic-congenital-heart-disease-in-the-newborn\nhttps://www.uptodate.com/contents/evaluation-of-suspected-critical-congenital-heart-disease-chd-in-the-newborn\nDiretrizes/consensos atualizados:\nAAP Clinical Report 2024/2025 (novo algoritmo de triagem de CCHD): https://pubmed.ncbi.nlm.nih.gov/39679594/\nCDC 2025 - Screening for Critical Congenital Heart Defects: https://www.cdc.gov/heart-defects/screening/index.html\nComentário/implementação das recomendações AAP (2025): https://pubmed.ncbi.nlm.nih.gov/40316755/"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 14,
     "aula": "Cardiomegalia no Rx - cardiopatia congenita ou miocardite?",
-    "refs": "Nelson - capítulo 488.5 (Myocarditis); capítulo 491 (HEART FAILURE)\nTratado volume 1, seção 14, capítulo Endocardite, pericardite e miocardite; capítulo Insuficiência cardíaca na criança\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/clinical-manifestations-and-diagnosis-of-myocarditis-in-children\nhttps://www.uptodate.com/contents/heart-failure-in-children-etiology-clinical-manifestations-and-diagnosis\nhttps://www.uptodate.com/contents/heart-failure-in-children-management"
+    "refs": "Nelson - capítulo 488.5 (Myocarditis); capítulo 491 (HEART FAILURE)\nTratado volume 1, seção 14, capítulo Endocardite, pericardite e miocardite; capítulo Insuficiência cardíaca na criança\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/clinical-manifestations-and-diagnosis-of-myocarditis-in-children\nhttps://www.uptodate.com/contents/heart-failure-in-children-etiology-clinical-manifestations-and-diagnosis\nhttps://www.uptodate.com/contents/heart-failure-in-children-management\nDiretrizes/consensos atualizados:\nAHA Scientific Statement (miocardite na pediatria, 2021): https://pubmed.ncbi.nlm.nih.gov/34229446/\nAHA Scientific Statement (HF em CHD; resumo ACC): https://www.acc.org/latest-in-cardiology/articles/2025/06/03/11/04/aha-scientific-statement-on-hf-in-children-with-congenital-heart-disease\nAAP Clinical Report CCHD 2024/2025: https://pubmed.ncbi.nlm.nih.gov/39679594/"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 15,
     "aula": "A criança com relato de sincope - o que fazer?",
-    "refs": "Nelson - capítulo 84 (SYNCOPE); capítulo 484 (DISTURBANCES OF RATE AND RHYTHM OF THE HEART)\nTratado volume 1, seção 3, capítulo Síncope no paciente pediátrico\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/causes-of-syncope-in-children-and-adolescents\nhttps://www.uptodate.com/contents/approach-to-the-child-with-syncope\nhttps://www.uptodate.com/contents/emergency-evaluation-of-syncope-in-children-and-adolescents"
+    "refs": "Nelson - capítulo 84 (SYNCOPE); capítulo 484 (DISTURBANCES OF RATE AND RHYTHM OF THE HEART)\nTratado volume 1, seção 3, capítulo Síncope no paciente pediátrico\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/causes-of-syncope-in-children-and-adolescents\nhttps://www.uptodate.com/contents/approach-to-the-child-with-syncope\nhttps://www.uptodate.com/contents/emergency-evaluation-of-syncope-in-children-and-adolescents\nDiretrizes/consensos atualizados:\nESC Guidelines 2018 para síncope: https://www.sigg.it/wp-content/uploads/2018/11/2018.ESC-Syncope-Guidelines.pdf\nPractical instructions ESC 2018: https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2018/04/04/15/09/Practical-Instructions-for-the-2018-ESC-Guidelines-for-Syncope\nResumo ACC dos pontos-chave ESC 2018: https://www.acc.org/Latest-in-Cardiology/ten-points-to-remember/2018/04/04/14/28/2018-ESC-Guidelines-for-Syncope"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 16,
     "aula": "Insuficiencia renal aguda na infancia - quais os criterios e a conduçao inicial",
-    "refs": "Nelson - capítulo 572.1 (Acute Kidney Injury)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 22, capítulo Injúria renal aguda\nhttps://www.uptodate.com/contents/acute-kidney-injury-in-children-and-adolescents-etiology-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/acute-kidney-injury-in-children-and-adolescents-management\nhttps://www.uptodate.com/contents/overview-of-acute-kidney-injury-acute-renal-failure-in-children"
+    "refs": "Nelson - capítulo 572.1 (Acute Kidney Injury)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 22, capítulo Injúria renal aguda\nhttps://www.uptodate.com/contents/acute-kidney-injury-in-children-and-adolescents-etiology-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/acute-kidney-injury-in-children-and-adolescents-management\nhttps://www.uptodate.com/contents/overview-of-acute-kidney-injury-acute-renal-failure-in-children\nDiretrizes/consensos atualizados:\nNICE NG148 AKI (atualizado em 16/10/2024): https://www.nice.org.uk/guidance/ng148\nNICE AKI texto consolidado (NCBI, 2024): https://www.ncbi.nlm.nih.gov/books/NBK552160/\nKDIGO 2012 AKI Guideline (PDF; inclui população pediátrica): https://kdigo.org/wp-content/uploads/2016/10/KDIGO-2012-AKI-Guideline-English.pdf"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 17,
     "aula": "Alteraçoes no potássio - hipercalemia: o que fazer",
-    "refs": "Nelson - capítulo 73.4 (Potassium); capítulo 569.3 (Hyperkalemic (Type IV) Renal Tubular Acidosis)\nTratado volume 1, seção 3, capítulo Desidratação e distúrbios eletrolíticos\nTratado volume 2, seção 31, capítulo Distúrbios metabólicos do sódio e do potássio e do equilíbrio acidobásico\nhttps://www.uptodate.com/contents/hyperkalemia-in-children-causes-clinical-manifestations-diagnosis-and-evaluation\nhttps://www.uptodate.com/contents/hyperkalemia-in-children-management\nhttps://www.uptodate.com/contents/hypokalemia-in-children-clinical-features-and-diagnosis"
+    "refs": "Nelson - capítulo 73.4 (Potassium); capítulo 569.3 (Hyperkalemic (Type IV) Renal Tubular Acidosis)\nTratado volume 1, seção 3, capítulo Desidratação e distúrbios eletrolíticos\nTratado volume 2, seção 31, capítulo Distúrbios metabólicos do sódio e do potássio e do equilíbrio acidobásico\nhttps://www.uptodate.com/contents/hyperkalemia-in-children-causes-clinical-manifestations-diagnosis-and-evaluation\nhttps://www.uptodate.com/contents/hyperkalemia-in-children-management\nhttps://www.uptodate.com/contents/hypokalemia-in-children-clinical-features-and-diagnosis\nDiretrizes/consensos atualizados:\nUKKA Clinical Practice Guideline 2023 para hipercalemia: https://www.ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults-0\nKDIGO 2012 AKI Guideline (PDF; base para IRA e eletrólitos): https://kdigo.org/wp-content/uploads/2016/10/KDIGO-2012-AKI-Guideline-English.pdf\nNICE NG29 (monitorização de sódio/potássio em crianças): https://www.nice.org.uk/guidance/ng29"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 18,
     "aula": "O bebe com dilataçao de pelve renal - como acompanhar?",
-    "refs": "Nelson - capítulo 577 (OBSTRUCTION OF THE URINARY TRACT); capítulo 574 (CONGENITAL ANOMALIES AND DYSGENESIS OF THE KIDNEYS)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 35, capítulo Hidronefroses e doenças ureterais\nhttps://www.uptodate.com/contents/postnatal-evaluation-and-management-of-hydronephrosis\nhttps://www.uptodate.com/contents/fetal-hydronephrosis-prenatal-diagnosis-and-postnatal-evaluation\nhttps://www.uptodate.com/contents/antenatal-hydronephrosis"
+    "refs": "Nelson - capítulo 577 (OBSTRUCTION OF THE URINARY TRACT); capítulo 574 (CONGENITAL ANOMALIES AND DYSGENESIS OF THE KIDNEYS)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 35, capítulo Hidronefroses e doenças ureterais\nhttps://www.uptodate.com/contents/postnatal-evaluation-and-management-of-hydronephrosis\nhttps://www.uptodate.com/contents/fetal-hydronephrosis-prenatal-diagnosis-and-postnatal-evaluation\nhttps://www.uptodate.com/contents/antenatal-hydronephrosis\nDiretrizes/consensos atualizados:\nPrenatal hydronephrosis: bridging pre and postnatal management (2022): https://pubmed.ncbi.nlm.nih.gov/35165908/\nEAU/ESPU Paediatric Urology Guidelines (seguimento urológico pediátrico): https://uroweb.org/guidelines/paediatric-urology"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 19,
     "aula": "A criança com enurese",
-    "refs": "Nelson - capítulo 580 (ENURESIS AND VOIDING DYSFUNCTION)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 22, capítulo Enurese primária\nhttps://www.uptodate.com/contents/nocturnal-enuresis-in-children-etiology-and-evaluation\nhttps://www.uptodate.com/contents/nocturnal-enuresis-in-children-management\nhttps://www.uptodate.com/contents/daytime-urinary-incontinence-in-children-evaluation-and-management"
+    "refs": "Nelson - capítulo 580 (ENURESIS AND VOIDING DYSFUNCTION)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 22, capítulo Enurese primária\nhttps://www.uptodate.com/contents/nocturnal-enuresis-in-children-etiology-and-evaluation\nhttps://www.uptodate.com/contents/nocturnal-enuresis-in-children-management\nhttps://www.uptodate.com/contents/daytime-urinary-incontinence-in-children-evaluation-and-management\nDiretrizes/consensos atualizados:\nNICE CG111 Bedwetting in under 19s: https://www.nice.org.uk/guidance/cg111\nEAU/ESPU Paediatric Urology Guidelines (seção enurese/disfunção miccional): https://uroweb.org/guidelines/paediatric-urology"
   },
   {
     "modNum": 7,
     "modNome": "Nefro e Cardio",
     "aulaNum": 20,
     "aula": "Sindrome nefrotica: quando suspeitar",
-    "refs": "Nelson - capítulo 567 (NEPHROTIC SYNDROME)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 22, capítulo Síndrome nefrótica primária\nhttps://www.uptodate.com/contents/clinical-manifestations-diagnosis-and-evaluation-of-nephrotic-syndrome-in-children\nhttps://www.uptodate.com/contents/nephrotic-syndrome-in-children-treatment-and-prognosis\nhttps://www.uptodate.com/contents/overview-of-nephrotic-syndrome-in-children"
+    "refs": "Nelson - capítulo 567 (NEPHROTIC SYNDROME)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 22, capítulo Síndrome nefrótica primária\nhttps://www.uptodate.com/contents/clinical-manifestations-diagnosis-and-evaluation-of-nephrotic-syndrome-in-children\nhttps://www.uptodate.com/contents/nephrotic-syndrome-in-children-treatment-and-prognosis\nhttps://www.uptodate.com/contents/overview-of-nephrotic-syndrome-in-children\nDiretrizes/consensos atualizados:\nKDIGO 2025 Nephrotic Syndrome in Children (PDF): https://kdigo.org/wp-content/uploads/2025/04/KDIGO-2025-Guideline-for-Nephrotic-Syndrome-in-Children.pdf\nIPNA 2022/2023 recomendações para síndrome nefrótica sensível a esteroide: https://link.springer.com/article/10.1007/s00467-022-05739-3\nIPNA 2020 recomendações para síndrome nefrótica resistente a esteroide: https://link.springer.com/article/10.1007/s00467-020-04519-1"
   },
   {
     "modNum": 8,
     "modNome": "Endocrino e gineco",
     "aulaNum": 15,
     "aula": "Cetoacidose diabetica - quando suspeitar?",
-    "refs": "Nelson - capítulo 629 (DIABETES MELLITUS); capítulo 73 (ELECTROLYTE AND ACID-BASE DISORDERS)\nTratado volume 1, seção 16, capítulo Diabetes melito tipo 1 e tipo 2; seção 3, capítulo Cetoacidose diabética\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/diabetic-ketoacidosis-in-children-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/diabetic-ketoacidosis-in-children-treatment-and-complications\nhttps://www.uptodate.com/contents/management-of-type-1-diabetes-mellitus-in-children-and-adolescents"
+    "refs": "Nelson - capítulo 629 (DIABETES MELLITUS); capítulo 73 (ELECTROLYTE AND ACID-BASE DISORDERS)\nTratado volume 1, seção 16, capítulo Diabetes melito tipo 1 e tipo 2; seção 3, capítulo Cetoacidose diabética\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/diabetic-ketoacidosis-in-children-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/diabetic-ketoacidosis-in-children-treatment-and-complications\nhttps://www.uptodate.com/contents/management-of-type-1-diabetes-mellitus-in-children-and-adolescents\nDiretrizes/consensos atualizados:\nISPAD Chapter 11 (DKA/HHS) - página oficial: https://www.ispad.org/resource/chapter-11-diabetic-ketoacidosis.html\nISPAD DKA/HHS (PDF): https://www.ispad.org/asset/6DD62EAE-C8CB-4B4A-84E1EFC768505746/\nBSPED DKA guideline (atualização 26/11/2024, PDF): https://www.bsped.org.uk/media/v2ydcuv0/bsped-dka-guideline-v3.pdf"
   },
   {
     "modNum": 8,
     "modNome": "Endocrino e gineco",
     "aulaNum": 16,
     "aula": "Cetoacidose diabetica - manejo inicial",
-    "refs": "Nelson - capítulo 629 (DIABETES MELLITUS); capítulo 73 (ELECTROLYTE AND ACID-BASE DISORDERS)\nTratado volume 1, seção 16, capítulo Diabetes melito tipo 1 e tipo 2; seção 3, capítulo Cetoacidose diabética\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/diabetic-ketoacidosis-in-children-treatment-and-complications\nhttps://www.uptodate.com/contents/diabetic-ketoacidosis-in-children-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/fluid-and-electrolyte-therapy-in-diabetic-ketoacidosis"
+    "refs": "Nelson - capítulo 629 (DIABETES MELLITUS); capítulo 73 (ELECTROLYTE AND ACID-BASE DISORDERS)\nTratado volume 1, seção 16, capítulo Diabetes melito tipo 1 e tipo 2; seção 3, capítulo Cetoacidose diabética\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/diabetic-ketoacidosis-in-children-treatment-and-complications\nhttps://www.uptodate.com/contents/diabetic-ketoacidosis-in-children-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/fluid-and-electrolyte-therapy-in-diabetic-ketoacidosis\nDiretrizes/consensos atualizados:\nISPAD Chapter 11 (DKA/HHS) - página oficial: https://www.ispad.org/resource/chapter-11-diabetic-ketoacidosis.html\nISPAD DKA/HHS (PDF): https://www.ispad.org/asset/6DD62EAE-C8CB-4B4A-84E1EFC768505746/\nBSPED DKA guideline (atualização 26/11/2024, PDF): https://www.bsped.org.uk/media/v2ydcuv0/bsped-dka-guideline-v3.pdf"
   },
   {
     "modNum": 8,
     "modNome": "Endocrino e gineco",
     "aulaNum": 17,
     "aula": "Acidose metabolica - o que investigar?",
-    "refs": "Nelson - capítulo 73 (ELECTROLYTE AND ACID-BASE DISORDERS); capítulo 569 (RENAL TUBULAR ACIDOSIS)\nTratado volume 1, seção 3, capítulo Desidratação e distúrbios eletrolíticos\nTratado volume 2, seção 31, capítulo Distúrbios metabólicos do sódio e do potássio e do equilíbrio acidobásico\nhttps://www.uptodate.com/contents/approach-to-the-child-with-metabolic-acidosis\nhttps://www.uptodate.com/contents/etiology-and-clinical-manifestations-of-metabolic-acidosis-in-children\nhttps://www.uptodate.com/contents/high-anion-gap-metabolic-acidosis-in-children"
+    "refs": "Nelson - capítulo 73 (ELECTROLYTE AND ACID-BASE DISORDERS); capítulo 569 (RENAL TUBULAR ACIDOSIS)\nTratado volume 1, seção 3, capítulo Desidratação e distúrbios eletrolíticos\nTratado volume 2, seção 31, capítulo Distúrbios metabólicos do sódio e do potássio e do equilíbrio acidobásico\nhttps://www.uptodate.com/contents/approach-to-the-child-with-metabolic-acidosis\nhttps://www.uptodate.com/contents/etiology-and-clinical-manifestations-of-metabolic-acidosis-in-children\nhttps://www.uptodate.com/contents/high-anion-gap-metabolic-acidosis-in-children\nDiretrizes/consensos atualizados:\nNICE NG29 (avaliação e manejo hidroeletrolítico em pediatria): https://www.nice.org.uk/guidance/ng29\nAAP CPG 2018 para fluidoterapia de manutenção em crianças: https://pubmed.ncbi.nlm.nih.gov/30478247/\nKDIGO 2012 AKI Guideline (PDF; contexto de distúrbios ácido-básicos na IRA): https://kdigo.org/wp-content/uploads/2016/10/KDIGO-2012-AKI-Guideline-English.pdf"
   },
   {
     "modNum": 8,
     "modNome": "Endocrino e gineco",
     "aulaNum": 18,
     "aula": "Disturbios de sódio - manejo clinico",
-    "refs": "Nelson - capítulo 73.3 (Sodium); capítulo 73.4 (Potassium)\nTratado volume 1, seção 3, capítulo Desidratação e distúrbios eletrolíticos\nTratado volume 2, seção 31, capítulo Distúrbios metabólicos do sódio e do potássio e do equilíbrio acidobásico\nhttps://www.uptodate.com/contents/hyponatremia-in-children-etiology-and-clinical-manifestations\nhttps://www.uptodate.com/contents/hypernatremia-in-children-etiology-and-clinical-manifestations\nhttps://www.uptodate.com/contents/hypernatremia-in-children-management"
+    "refs": "Nelson - capítulo 73.3 (Sodium); capítulo 73.4 (Potassium)\nTratado volume 1, seção 3, capítulo Desidratação e distúrbios eletrolíticos\nTratado volume 2, seção 31, capítulo Distúrbios metabólicos do sódio e do potássio e do equilíbrio acidobásico\nhttps://www.uptodate.com/contents/hyponatremia-in-children-etiology-and-clinical-manifestations\nhttps://www.uptodate.com/contents/hypernatremia-in-children-etiology-and-clinical-manifestations\nhttps://www.uptodate.com/contents/hypernatremia-in-children-management\nDiretrizes/consensos atualizados:\nNICE NG29 (sódio e fluidoterapia isotônica em pediatria): https://www.nice.org.uk/guidance/ng29\nEvidências NICE NG29 (inclui hiponatremia/hipernatremia): https://www.nice.org.uk/guidance/ng29/evidence\nAAP CPG 2018 para fluidoterapia de manutenção em crianças: https://pubmed.ncbi.nlm.nih.gov/30478247/"
   },
   {
     "modNum": 9,
     "modNome": "Cirurgia ortopedia e reumato",
     "aulaNum": 10,
     "aula": "Dor abdominal aguda - como conduzir",
-    "refs": "Nelson - capítulo 391 (ACUTE APPENDICITIS); capítulo 387 (ACUTE GASTROENTERITIS IN CHILDREN)\nTratado volume 1, seção 3, capítulo Abdome agudo\nTratado volume 2, seção 35, capítulo Apendicite aguda\nhttps://www.uptodate.com/contents/emergency-evaluation-of-the-child-with-acute-abdominal-pain\nhttps://www.uptodate.com/contents/causes-of-acute-abdominal-pain-in-children-and-adolescents\nhttps://www.uptodate.com/contents/acute-appendicitis-in-children-clinical-manifestations-and-diagnosis"
+    "refs": "Nelson - capítulo 391 (ACUTE APPENDICITIS); capítulo 387 (ACUTE GASTROENTERITIS IN CHILDREN)\nTratado volume 1, seção 3, capítulo Abdome agudo\nTratado volume 2, seção 35, capítulo Apendicite aguda\nhttps://www.uptodate.com/contents/emergency-evaluation-of-the-child-with-acute-abdominal-pain\nhttps://www.uptodate.com/contents/causes-of-acute-abdominal-pain-in-children-and-adolescents\nhttps://www.uptodate.com/contents/acute-appendicitis-in-children-clinical-manifestations-and-diagnosis\nDiretrizes/consensos atualizados:\nWSES Jerusalem Guidelines update 2020 (adulto e pediátrico): https://pubmed.ncbi.nlm.nih.gov/32295644/\nWSES 2020 texto completo (PMC): https://pmc.ncbi.nlm.nih.gov/articles/PMC7386163/\nNICE CG84 (vômitos/gastroenterite em <5 anos; diagnóstico diferencial): https://www.ncbi.nlm.nih.gov/books/NBK608567/"
   },
   {
     "modNum": 9,
     "modNome": "Cirurgia ortopedia e reumato",
     "aulaNum": 11,
     "aula": "Estenose hipertrofica de piloro - quando suspeitar?",
-    "refs": "Nelson - capítulo 375.1 (Hypertrophic Pyloric Stenosis)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 35, capítulo Obstrução pilórica\nhttps://www.uptodate.com/contents/infantile-hypertrophic-pyloric-stenosis\nhttps://www.uptodate.com/contents/anesthesia-for-pyloromyotomy-in-infants\nhttps://www.uptodate.com/contents/vomiting-in-infants-and-children"
+    "refs": "Nelson - capítulo 375.1 (Hypertrophic Pyloric Stenosis)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 35, capítulo Obstrução pilórica\nhttps://www.uptodate.com/contents/infantile-hypertrophic-pyloric-stenosis\nhttps://www.uptodate.com/contents/anesthesia-for-pyloromyotomy-in-infants\nhttps://www.uptodate.com/contents/vomiting-in-infants-and-children\nDiretrizes/consensos atualizados:\nNICE CG84 (vômitos na infância e avaliação inicial): https://www.ncbi.nlm.nih.gov/books/NBK608567/\nNASPGHAN 2025 (diagnóstico de síndrome do vômito cíclico): https://pubmed.ncbi.nlm.nih.gov/40836301/\nNASPGHAN 2025 (manejo de síndrome do vômito cíclico): https://pubmed.ncbi.nlm.nih.gov/40223700/"
   },
   {
     "modNum": 9,
     "modNome": "Cirurgia ortopedia e reumato",
     "aulaNum": 12,
     "aula": "A criança com fratura óssea - imobilização e controle da dor",
-    "refs": "Nelson - capítulo 724 (COMMON FRACTURES)\nTratado volume 1, seção 3, capítulo Trauma\nTratado volume 2, seção 35, capítulo Peculiaridades da criança traumatizada\nhttps://www.uptodate.com/contents/distal-forearm-fractures-in-children-initial-management\nhttps://www.uptodate.com/contents/overview-of-tibial-and-fibular-fractures-in-children\nhttps://www.uptodate.com/contents/pediatric-fracture-management-principles"
+    "refs": "Nelson - capítulo 724 (COMMON FRACTURES)\nTratado volume 1, seção 3, capítulo Trauma\nTratado volume 2, seção 35, capítulo Peculiaridades da criança traumatizada\nhttps://www.uptodate.com/contents/distal-forearm-fractures-in-children-initial-management\nhttps://www.uptodate.com/contents/overview-of-tibial-and-fibular-fractures-in-children\nhttps://www.uptodate.com/contents/pediatric-fracture-management-principles\nDiretrizes/consensos atualizados:\nNICE NG38 Fractures (non-complex): https://www.nice.org.uk/guidance/ng38\nEvidências NICE NG38 (inclui dor e imobilização): https://www.nice.org.uk/guidance/ng38/evidence\nNCBI NICE NG38 (versão em PDF): https://www.ncbi.nlm.nih.gov/books/NBK620443/"
   },
   {
     "modNum": 9,
     "modNome": "Cirurgia ortopedia e reumato",
     "aulaNum": 13,
     "aula": "Dor do crescimento",
-    "refs": "Nelson - capítulo 211.1 (Growing Pains (Benign Limb Pain of Childhood))\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 34, capítulo Dor nos membros inferiores em crianças\nhttps://www.uptodate.com/contents/growing-pains\nhttps://www.uptodate.com/contents/evaluation-of-the-child-with-joint-pain-and-or-swelling\nhttps://www.uptodate.com/contents/musculoskeletal-pain-in-children-and-adolescents"
+    "refs": "Nelson - capítulo 211.1 (Growing Pains (Benign Limb Pain of Childhood))\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 34, capítulo Dor nos membros inferiores em crianças\nhttps://www.uptodate.com/contents/growing-pains\nhttps://www.uptodate.com/contents/evaluation-of-the-child-with-joint-pain-and-or-swelling\nhttps://www.uptodate.com/contents/musculoskeletal-pain-in-children-and-adolescents\nDiretrizes/consensos atualizados:\nNICE NG193 Chronic pain (all ages, incluindo crianças/adolescentes): https://www.nice.org.uk/guidance/ng193\nNICE NG193 evidence: https://www.nice.org.uk/guidance/ng193/evidence"
   },
   {
     "modNum": 9,
     "modNome": "Cirurgia ortopedia e reumato",
     "aulaNum": 14,
     "aula": "Mialgias e miosites - quando investigar e tratar",
-    "refs": "Nelson - capítulo 200 (JUVENILE DERMATOMYOSITIS)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 30, capítulo Miopatias inflamatórias pediátricas\nhttps://www.uptodate.com/contents/juvenile-dermatomyositis-and-other-idiopathic-inflammatory-myopathies-diagnosis\nhttps://www.uptodate.com/contents/juvenile-dermatomyositis-and-other-idiopathic-inflammatory-myopathies-treatment\nhttps://www.uptodate.com/contents/approach-to-the-child-with-muscle-weakness"
+    "refs": "Nelson - capítulo 200 (JUVENILE DERMATOMYOSITIS)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 30, capítulo Miopatias inflamatórias pediátricas\nhttps://www.uptodate.com/contents/juvenile-dermatomyositis-and-other-idiopathic-inflammatory-myopathies-diagnosis\nhttps://www.uptodate.com/contents/juvenile-dermatomyositis-and-other-idiopathic-inflammatory-myopathies-treatment\nhttps://www.uptodate.com/contents/approach-to-the-child-with-muscle-weakness\nDiretrizes/consensos atualizados:\nEAN/PNS 2023 guideline para Guillain-Barre (diagnóstico diferencial de fraqueza/mialgia): https://pubmed.ncbi.nlm.nih.gov/37814552/\nAHA/ASA 2019 statement para AVC pediátrico (déficit motor agudo e DDx): https://pubmed.ncbi.nlm.nih.gov/30686119/"
   },
   {
     "modNum": 9,
     "modNome": "Cirurgia ortopedia e reumato",
     "aulaNum": 16,
     "aula": "Febre hemorragica - diagnostico diferencial e propedeutica",
-    "refs": "Nelson - capítulo 315 (DENGUE FEVER, DENGUE HEMORRHAGIC FEVER, AND SEVERE DENGUE)\nTratado volume 1, seção 20, capítulo Dengue\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/dengue-virus-infection-clinical-manifestations-and-diagnosis\nhttps://www.uptodate.com/contents/dengue-virus-infection-treatment-and-prevention\nhttps://www.uptodate.com/contents/dengue-virus-infection-management"
+    "refs": "Nelson - capítulo 315 (DENGUE FEVER, DENGUE HEMORRHAGIC FEVER, AND SEVERE DENGUE)\nTratado volume 1, seção 20, capítulo Dengue\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/dengue-virus-infection-clinical-manifestations-and-diagnosis\nhttps://www.uptodate.com/contents/dengue-virus-infection-treatment-and-prevention\nhttps://www.uptodate.com/contents/dengue-virus-infection-management\nDiretrizes/consensos atualizados:\nMS Brasil 2024 - Dengue: diagnóstico e manejo clínico (adulto e criança): https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/dengue/dengue-diagnostico-e-manejo-clinico-adulto-e-crianca/view\nPDF (6ª ed., 2024) - Dengue manejo clínico: http://bvsms.saude.gov.br/bvs/publicacoes/dengue_diagnostico_manejo_clinico_6ed.pdf\nFluxograma de manejo clínico da dengue (MS, atualizado em 2025): https://www.gov.br/saude/pt-br/composicao/svsa/resposta-a-emergencias/coes/arboviroses/publicacoes/fluxograma-do-manejo-clinico-da-dengue.pdf"
   },
   {
     "modNum": 10,
     "modNome": "Neurologia e dermato",
     "aulaNum": 10,
     "aula": "Traumatismo cranioencefalico leve: quando realizar TC de crânio?",
-    "refs": "Nelson - capítulo 729 (SPORTS-RELATED TRAUMATIC BRAIN INJURY (CONCUSSION))\nTratado volume 1, seção 3, capítulo Traumatismo cranioencefálico\nTratado volume 2, seção 31, capítulo Trauma cranioencefálico – abordagem intensiva\nhttps://www.uptodate.com/contents/minor-blunt-head-trauma-in-infants-and-young-children-less-than2-years-clinical-features-and-evaluation\nhttps://www.uptodate.com/contents/minor-head-trauma-in-children-management\nhttps://www.uptodate.com/contents/concussion-in-children-and-adolescents"
+    "refs": "Nelson - capítulo 729 (SPORTS-RELATED TRAUMATIC BRAIN INJURY (CONCUSSION))\nTratado volume 1, seção 3, capítulo Traumatismo cranioencefálico\nTratado volume 2, seção 31, capítulo Trauma cranioencefálico – abordagem intensiva\nhttps://www.uptodate.com/contents/minor-blunt-head-trauma-in-infants-and-young-children-less-than2-years-clinical-features-and-evaluation\nhttps://www.uptodate.com/contents/minor-head-trauma-in-children-management\nhttps://www.uptodate.com/contents/concussion-in-children-and-adolescents\nDiretrizes/consensos atualizados:\nNICE NG232 Head injury (2023): https://www.nice.org.uk/guidance/ng232\nEvidências NG232 (regras de decisão para imagem/TC): https://www.nice.org.uk/guidance/ng232/evidence\nCDC Pediatric mTBI Guideline: https://www.cdc.gov/traumatic-brain-injury/hcp/clinical-guidance/pediatric-mtbi.html"
   },
   {
     "modNum": 10,
     "modNome": "Neurologia e dermato",
     "aulaNum": 11,
     "aula": "Crise convulsiva: como conduzir?",
-    "refs": "Nelson - capítulo 633 (SEIZURES IN CHILDHOOD); capítulo 633.8 (Status Epilepticus)\nTratado volume 1, seção 3, capítulo Crise convulsiva em sala de emergência\nTratado volume 2, seção 23, capítulo Epilepsia na infância; capítulo Estado de mal epiléptico\nhttps://www.uptodate.com/contents/seizures-and-epilepsy-in-children-initial-treatment-and-monitoring\nhttps://www.uptodate.com/contents/treatment-of-status-epilepticus-in-children\nhttps://www.uptodate.com/contents/first-unprovoked-seizure-in-children"
+    "refs": "Nelson - capítulo 633 (SEIZURES IN CHILDHOOD); capítulo 633.8 (Status Epilepticus)\nTratado volume 1, seção 3, capítulo Crise convulsiva em sala de emergência\nTratado volume 2, seção 23, capítulo Epilepsia na infância; capítulo Estado de mal epiléptico\nhttps://www.uptodate.com/contents/seizures-and-epilepsy-in-children-initial-treatment-and-monitoring\nhttps://www.uptodate.com/contents/treatment-of-status-epilepticus-in-children\nhttps://www.uptodate.com/contents/first-unprovoked-seizure-in-children\nDiretrizes/consensos atualizados:\nNICE NG217 Epilepsies (atualizado em 30/01/2025): https://www.nice.org.uk/guidance/ng217\nEvidências NG217 (inclui status epilepticus): https://www.nice.org.uk/guidance/ng217/evidence\nRevisão prática da NG217 em pediatria (2023): https://pubmed.ncbi.nlm.nih.gov/37339862/"
   },
   {
     "modNum": 10,
     "modNome": "Neurologia e dermato",
     "aulaNum": 12,
     "aula": "A criança com rebaixamento do sensório - diagnostico diferencial",
-    "refs": "Nelson - capítulo 638 (ENCEPHALOPATHIES); capítulo 643 (CENTRAL NERVOUS SYSTEM INFECTIONS)\nTratado volume 1, seção 3, capítulo Coma e alteraçãodo estado mental\nTratado volume 2, seção 23, capítulo Acidentes vasculares encefálicos\nhttps://www.uptodate.com/contents/stupor-and-coma-in-children\nhttps://www.uptodate.com/contents/acute-toxic-metabolic-encephalopathy-in-children\nhttps://www.uptodate.com/contents/approach-to-the-child-with-altered-mental-status"
+    "refs": "Nelson - capítulo 638 (ENCEPHALOPATHIES); capítulo 643 (CENTRAL NERVOUS SYSTEM INFECTIONS)\nTratado volume 1, seção 3, capítulo Coma e alteraçãodo estado mental\nTratado volume 2, seção 23, capítulo Acidentes vasculares encefálicos\nhttps://www.uptodate.com/contents/stupor-and-coma-in-children\nhttps://www.uptodate.com/contents/acute-toxic-metabolic-encephalopathy-in-children\nhttps://www.uptodate.com/contents/approach-to-the-child-with-altered-mental-status\nDiretrizes/consensos atualizados:\nNICE NG240 meningite bacteriana/doença meningocócica (2024): https://www.nice.org.uk/guidance/ng240\nEvidências NG240 (inclui investigação laboratorial e LCR): https://www.nice.org.uk/guidance/ng240/evidence\nAHA/ASA 2019 (AVC em neonatos e crianças; DDx de alteração neurológica aguda): https://pubmed.ncbi.nlm.nih.gov/30686119/"
   },
   {
     "modNum": 10,
     "modNome": "Neurologia e dermato",
     "aulaNum": 13,
     "aula": "Bebe hipotônico: o que fazer?",
-    "refs": "Nelson - capítulo 648.9 (Benign Congenital Hypotonia); capítulo 647 (EVALUATION AND INVESTIGATION OF NEUROMUSCULAR DISORDERS)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 23, capítulo Doenças neuromusculares\nhttps://www.uptodate.com/contents/approach-to-the-infant-with-hypotonia-and-weakness\nhttps://www.uptodate.com/contents/overview-of-peripheral-nerve-and-muscle-disorders-in-children\nhttps://www.uptodate.com/contents/spinal-muscular-atrophy-in-infants-and-children"
+    "refs": "Nelson - capítulo 648.9 (Benign Congenital Hypotonia); capítulo 647 (EVALUATION AND INVESTIGATION OF NEUROMUSCULAR DISORDERS)\nTratado volume 1: não encontrei capítulo compatível no sumário deste livro.\nTratado volume 2, seção 23, capítulo Doenças neuromusculares\nhttps://www.uptodate.com/contents/approach-to-the-infant-with-hypotonia-and-weakness\nhttps://www.uptodate.com/contents/overview-of-peripheral-nerve-and-muscle-disorders-in-children\nhttps://www.uptodate.com/contents/spinal-muscular-atrophy-in-infants-and-children\nDiretrizes/consensos atualizados:\nEAN/PNS 2023 guideline para Guillain-Barre (fraqueza/hipotonia aguda): https://pubmed.ncbi.nlm.nih.gov/37814552/\nAHA/ASA 2019 statement para AVC pediátrico (déficit motor/hipotonia aguda): https://pubmed.ncbi.nlm.nih.gov/30686119/\nNICE NG240 (exclusão de causas infecciosas do SNC): https://www.nice.org.uk/guidance/ng240"
   },
   {
     "modNum": 10,
     "modNome": "Neurologia e dermato",
     "aulaNum": 14,
     "aula": "Como interpretar o resultado do liquor?",
-    "refs": "Nelson - capítulo 643.1 (Acute Bacterial Meningitis Beyond the Neonatal Period); capítulo 630 (NEUROLOGIC EVALUATION)\nTratado volume 1, seção 20, capítulo Meningites bacterianas\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/lumbar-puncture-in-children\nhttps://www.uptodate.com/contents/bacterial-meningitis-in-infants-and-children-older-than-one-month-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/cerebrospinal-fluid-analysis"
+    "refs": "Nelson - capítulo 643.1 (Acute Bacterial Meningitis Beyond the Neonatal Period); capítulo 630 (NEUROLOGIC EVALUATION)\nTratado volume 1, seção 20, capítulo Meningites bacterianas\nTratado volume 2: não encontrei capítulo compatível no sumário deste livro.\nhttps://www.uptodate.com/contents/lumbar-puncture-in-children\nhttps://www.uptodate.com/contents/bacterial-meningitis-in-infants-and-children-older-than-one-month-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/cerebrospinal-fluid-analysis\nDiretrizes/consensos atualizados:\nNICE NG240 (diagnóstico de meningite e punção lombar): https://www.nice.org.uk/guidance/ng240\nEvidência NG240 B3 (parâmetros de LCR): https://www.nice.org.uk/guidance/ng240/evidence\nESCMID guideline para meningite bacteriana (referência complementar): https://pubmed.ncbi.nlm.nih.gov/27062097/"
   },
   {
     "modNum": 10,
     "modNome": "Neurologia e dermato",
     "aulaNum": 15,
     "aula": "A criança com déficit motor agudo - diagnóstico diferencial",
-    "refs": "Nelson - capítulo 641 (PEDIATRIC STROKE); capítulo 647 (EVALUATION AND INVESTIGATION OF NEUROMUSCULAR DISORDERS)\nTratado volume 1, seção 3, capítulo Coma e alteraçãodo estado mental\nTratado volume 2, seção 23, capítulo Acidentes vasculares encefálicos; capítulo Neuropatias periféricas em crianças e adolescentes\nhttps://www.uptodate.com/contents/etiology-and-evaluation-of-the-child-with-weakness\nhttps://www.uptodate.com/contents/guillain-barre-syndrome-in-children-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/pediatric-stroke-clinical-features-and-diagnosis"
+    "refs": "Nelson - capítulo 641 (PEDIATRIC STROKE); capítulo 647 (EVALUATION AND INVESTIGATION OF NEUROMUSCULAR DISORDERS)\nTratado volume 1, seção 3, capítulo Coma e alteraçãodo estado mental\nTratado volume 2, seção 23, capítulo Acidentes vasculares encefálicos; capítulo Neuropatias periféricas em crianças e adolescentes\nhttps://www.uptodate.com/contents/etiology-and-evaluation-of-the-child-with-weakness\nhttps://www.uptodate.com/contents/guillain-barre-syndrome-in-children-clinical-features-and-diagnosis\nhttps://www.uptodate.com/contents/pediatric-stroke-clinical-features-and-diagnosis\nDiretrizes/consensos atualizados:\nAHA/ASA 2019 statement para AVC em neonatos/crianças: https://pubmed.ncbi.nlm.nih.gov/30686119/\nEAN/PNS 2023 guideline para Guillain-Barre: https://pubmed.ncbi.nlm.nih.gov/37814552/\nNICE NG240 (DDx infeccioso do SNC): https://www.nice.org.uk/guidance/ng240"
   }
 ];
+
+    const luisAulasKey = new Set([
+      '6-13', '6-14', '6-15', '6-16', '6-17',
+      '7-9', '7-10', '7-11', '7-12', '7-13', '7-14', '7-15', '7-16', '7-17', '7-18', '7-19', '7-20',
+      '8-15', '8-16', '8-17', '8-18',
+      '9-10', '9-11', '9-12', '9-13', '9-14', '9-16',
+      '10-10', '10-11', '10-12', '10-13', '10-14', '10-15'
+    ]);
+
+    function getProfessorName(item) {
+      if (item.professor && String(item.professor).trim()) return String(item.professor).trim();
+      const key = `${item.modNum}-${item.aulaNum}`;
+      return luisAulasKey.has(key) ? 'Luis Fernando' : 'Lorena';
+    }
 
     const storageKey = 'lorena_referencias_v2_subtemas';
     const legacyReviewedStorageKey = 'lorena_aulas_revisadas_v1';
@@ -1035,6 +1065,7 @@
         const tdMod = document.createElement('td');
         const tdAulaNum = document.createElement('td');
         const tdAula = document.createElement('td');
+        const tdProfessor = document.createElement('td');
         const tdReview = document.createElement('td');
         const tdRef = document.createElement('td');
 
@@ -1042,6 +1073,7 @@
         tdMod.className = 'col-mod';
         tdAulaNum.className = 'col-aula-num';
         tdAula.className = 'col-aula';
+        tdProfessor.className = 'col-prof';
         tdReview.className = 'col-review';
         tdRef.className = 'col-ref';
 
@@ -1049,6 +1081,7 @@
         tdMod.textContent = item.modNome;
         tdAulaNum.innerHTML = `<span class='pill'>Aula ${item.aulaNum}</span>`;
         tdAula.textContent = item.aula;
+        tdProfessor.textContent = getProfessorName(item);
 
         const reviewWrap = document.createElement('div');
         reviewWrap.className = 'review-wrap';
@@ -1157,6 +1190,7 @@
         tr.appendChild(tdMod);
         tr.appendChild(tdAulaNum);
         tr.appendChild(tdAula);
+        tr.appendChild(tdProfessor);
         tr.appendChild(tdReview);
         tr.appendChild(tdRef);
         tableBody.appendChild(tr);
