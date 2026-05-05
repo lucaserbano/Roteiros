@@ -609,6 +609,13 @@
       localStorage.setItem(reviewedStorageKey, JSON.stringify(savedReviewed));
     }
 
+    function getRefsForSync(index) {
+      const ui = rowUiByIndex.get(index);
+      if (ui) return ui.textarea.value;
+      if (Object.prototype.hasOwnProperty.call(savedRefs, index)) return savedRefs[index];
+      return aulas[index]?.refs || '';
+    }
+
     function queueRowSync(index) {
       if (!supabaseClient) return;
       if (pendingRowSync.has(index)) {
@@ -627,7 +634,7 @@
       const payload = {
         app_key: APP_KEY,
         aula_index: index,
-        refs: savedRefs[index] || '',
+        refs: getRefsForSync(index),
         reviewed_eduardo: Boolean(reviewedState.eduardo),
         reviewed_lucas: Boolean(reviewedState.lucas)
       };
@@ -723,7 +730,12 @@
       const index = Number(row.aula_index);
       if (!Number.isInteger(index)) return;
       if (typeof row.refs === 'string') {
-        savedRefs[index] = row.refs;
+        const baseRefs = aulas[index]?.refs || '';
+        if (row.refs.trim() || !baseRefs.trim()) {
+          savedRefs[index] = row.refs;
+        } else {
+          delete savedRefs[index];
+        }
       }
       savedReviewed[index] = {
         eduardo: Boolean(row.reviewed_eduardo),
@@ -733,10 +745,11 @@
       const ui = rowUiByIndex.get(index);
       if (!ui) return;
 
+      const nextRefs = getRefsForSync(index);
       if (typeof row.refs === 'string' && document.activeElement !== ui.textarea) {
-        ui.textarea.value = row.refs;
+        ui.textarea.value = nextRefs;
         autoResize(ui.textarea);
-        const total = renderLinkPreview(row.refs, ui.linkPreview);
+        const total = renderLinkPreview(nextRefs, ui.linkPreview);
         ui.linkCount.textContent = `${total || 0} link(s) detectado(s)`;
       }
       if (document.activeElement !== ui.eduardoCheckbox) {
@@ -775,7 +788,7 @@
           return {
             app_key: APP_KEY,
             aula_index: index,
-            refs: savedRefs[index] || '',
+            refs: getRefsForSync(index),
             reviewed_eduardo: Boolean(reviewedState.eduardo),
             reviewed_lucas: Boolean(reviewedState.lucas)
           };
